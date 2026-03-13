@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Store {
+  id           String      @id @default(cuid())
+  name         String
+  slug         String      @unique
+  /// Subdomínio interno da plataforma, ex: "premium-cars"
+  subdomain    String      @unique
+  /// Domínio customizado completo, ex: "www.premiumcars.com.br"
+  customDomain String?     @unique
+  logoUrl      String?
+  primaryColor String      @default("#000000")
+  whatsapp     String
+  vehicles     Vehicle[]
+  users        User[]
+  leadEvents   LeadEvent[]
+  createdAt    DateTime    @default(now())
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("USER")
+  storeId   String?
+  store     Store?   @relation(fields: [storeId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Vehicle {
+  id          String         @id @default(cuid())
+  make        String
+  model       String
+  year        Int
+  price       Float
+  km          Int
+  description String?
+  featured    Boolean        @default(false)
+  status      Status         @default(AVAILABLE)
+  storeId     String
+  store       Store          @relation(fields: [storeId], references: [id])
+  createdAt   DateTime       @default(now())
+  images      VehicleImage[]
+  leadEvents  LeadEvent[]
+
+  @@index([storeId])
+}
+
+model LeadEvent {
+  id        String   @id @default(cuid())
+  vehicleId String?
+  vehicle   Vehicle? @relation(fields: [vehicleId], references: [id])
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id])
+  type      String // ex: 'WHATSAPP_CLICK'
+  createdAt DateTime @default(now())
+
+  @@index([storeId])
+}
+
+model VehicleImage {
+  id        String  @id @default(cuid())
+  url       String
+  isCover   Boolean @default(false)
+  order     Int     @default(0)
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+}
+
+enum Status {
+  AVAILABLE
+  RESERVED
+  SOLD
+}
