@@ -1,11 +1,12 @@
  "use server";
 
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import sharp from "sharp";
 import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/src/lib/auth";
 import { prisma } from "@/src/lib/prisma";
+import { r2Client } from "@/src/lib/r2";
 
 type CreateVehicleInput = {
   make: string;
@@ -18,15 +19,6 @@ type CreateVehicleInput = {
   status?: "AVAILABLE" | "RESERVED" | "SOLD";
   imageFiles: File[];
 };
-
-const r2Client = new S3Client({
-  region: process.env.R2_REGION ?? "auto",
-  endpoint: process.env.R2_ENDPOINT,
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID ?? "",
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? "",
-  },
-});
 
 export async function createVehicleAction(input: CreateVehicleInput) {
   const session = await getServerSession(authOptions);
