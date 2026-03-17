@@ -5,7 +5,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   
-  // ABRINDO A CATRACA PARA UPLOAD MÚLTIPLO
+  // Configuração para permitir uploads de arquivos maiores (até 50MB)
   experimental: {
     serverActions: {
       bodySizeLimit: '50mb',
@@ -15,25 +15,20 @@ const nextConfig = {
   images: {
     formats: ["image/webp", "image/avif"],
     remotePatterns: [
+      // Normalização automática para NEXT_PUBLIC_R2_PUBLIC_DOMAIN
       {
         protocol: "https",
-        hostname: process.env.NEXT_PUBLIC_R2_PUBLIC_DOMAIN ?? "localhost",
+        hostname: (process.env.NEXT_PUBLIC_R2_PUBLIC_DOMAIN || "localhost")
+          .replace(/^https?:\/\//, "") // Remove protocolo se houver
+          .replace(/\/$/, ""),          // Remove barra final se houver
       },
-      // Fallback: allow host derived from R2_PUBLIC_BASE_URL when provided
-      ...(process.env.R2_PUBLIC_BASE_URL
-        ? [
-            {
-              protocol: "https",
-              hostname: (() => {
-                try {
-                  return new URL(process.env.R2_PUBLIC_BASE_URL).hostname
-                } catch {
-                  return "localhost"
-                }
-              })(),
-            },
-          ]
-        : []),
+      // Normalização automática para R2_PUBLIC_BASE_URL
+      {
+        protocol: "https",
+        hostname: (process.env.R2_PUBLIC_BASE_URL || "localhost")
+          .replace(/^https?:\/\//, "")
+          .replace(/\/$/, ""),
+      },
       {
         protocol: "https",
         hostname: "images.unsplash.com",
