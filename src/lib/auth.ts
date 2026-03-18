@@ -9,7 +9,7 @@ declare module "next-auth" {
       id: string
       email: string
       name?: string | null
-      role: string
+      role: "SUPER_ADMIN" | "STORE_ADMIN" | "STORE_USER"
       storeId: string | null
     }
   }
@@ -18,7 +18,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     id: string
-    role: string
+    role: "SUPER_ADMIN" | "STORE_ADMIN" | "STORE_USER"
     storeId: string | null
   }
 }
@@ -41,11 +41,28 @@ export const authOptions: NextAuthOptions = {
 
         if (!email || !password) return null
 
+        // Verifica se é SUPER_ADMIN primeiro (não precisa de tenant)
+        const superAdmin = await prisma.user.findFirst({
+          where: { email, role: "SUPER_ADMIN" },
+        })
+
+        if (superAdmin) {
+          const isValid = await compare(password, superAdmin.password)
+          if (!isValid) return null
+          return {
+            id: superAdmin.id,
+            email: superAdmin.email,
+            name: superAdmin.name ?? undefined,
+            role: "SUPER_ADMIN" as const,
+            storeId: null,
+          }
+        }
+
+        // Para lojistas, resolve o tenant pelo subdomínio
         const rawHost =
           (req?.headers as Record<string, string> | undefined)?.host ?? ""
         const rootDomain =
           process.env.NEXT_PUBLIC_ROOT_DOMAIN?.toLowerCase().trim() ?? ""
-
         const currentHost = rawHost.replace(/:.*/, "").toLowerCase()
 
         let tenantStoreId: string | null = null
@@ -102,7 +119,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.name ?? undefined,
-          role: user.role,
+          role: user.role as "STORE_ADMIN" | "STORE_USER",
           storeId: user.storeId ?? null,
         }
       },
@@ -116,7 +133,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
-        token.role = (user as { role?: string }).role ?? "USER"
+        token.role = (user as { role?: string }).role as "SUPER_ADMIN" | "STORE_ADMIN" | "STORE_USER" ?? "STORE_ADMIN"
         token.storeId = (user as { storeId?: string | null }).storeId ?? null
       }
       return token

@@ -143,6 +143,20 @@ exports.Prisma.UserScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.StoreRequestScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  whatsapp: 'whatsapp',
+  storeName: 'storeName',
+  subdomain: 'subdomain',
+  message: 'message',
+  status: 'status',
+  rejectedNote: 'rejectedNote',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.VehicleScalarFieldEnum = {
   id: 'id',
   make: 'make',
@@ -196,6 +210,18 @@ exports.StoreStatus = exports.$Enums.StoreStatus = {
   CANCELLED: 'CANCELLED'
 };
 
+exports.UserRole = exports.$Enums.UserRole = {
+  SUPER_ADMIN: 'SUPER_ADMIN',
+  STORE_ADMIN: 'STORE_ADMIN',
+  STORE_USER: 'STORE_USER'
+};
+
+exports.StoreRequestStatus = exports.$Enums.StoreRequestStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
 exports.Status = exports.$Enums.Status = {
   AVAILABLE: 'AVAILABLE',
   RESERVED: 'RESERVED',
@@ -205,6 +231,7 @@ exports.Status = exports.$Enums.Status = {
 exports.Prisma.ModelName = {
   Store: 'Store',
   User: 'User',
+  StoreRequest: 'StoreRequest',
   Vehicle: 'Vehicle',
   LeadEvent: 'LeadEvent',
   VehicleImage: 'VehicleImage'

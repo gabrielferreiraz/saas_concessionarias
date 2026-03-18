@@ -24,6 +24,11 @@ export type Store = $Result.DefaultSelection<Prisma.$StorePayload>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model StoreRequest
+ * 
+ */
+export type StoreRequest = $Result.DefaultSelection<Prisma.$StoreRequestPayload>
+/**
  * Model Vehicle
  * 
  */
@@ -43,7 +48,25 @@ export type VehicleImage = $Result.DefaultSelection<Prisma.$VehicleImagePayload>
  * Enums
  */
 export namespace $Enums {
-  export const Status: {
+  export const UserRole: {
+  SUPER_ADMIN: 'SUPER_ADMIN',
+  STORE_ADMIN: 'STORE_ADMIN',
+  STORE_USER: 'STORE_USER'
+};
+
+export type UserRole = (typeof UserRole)[keyof typeof UserRole]
+
+
+export const StoreRequestStatus: {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
+export type StoreRequestStatus = (typeof StoreRequestStatus)[keyof typeof StoreRequestStatus]
+
+
+export const Status: {
   AVAILABLE: 'AVAILABLE',
   RESERVED: 'RESERVED',
   SOLD: 'SOLD'
@@ -61,6 +84,14 @@ export const StoreStatus: {
 export type StoreStatus = (typeof StoreStatus)[keyof typeof StoreStatus]
 
 }
+
+export type UserRole = $Enums.UserRole
+
+export const UserRole: typeof $Enums.UserRole
+
+export type StoreRequestStatus = $Enums.StoreRequestStatus
+
+export const StoreRequestStatus: typeof $Enums.StoreRequestStatus
 
 export type Status = $Enums.Status
 
@@ -210,6 +241,16 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.storeRequest`: Exposes CRUD operations for the **StoreRequest** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StoreRequests
+    * const storeRequests = await prisma.storeRequest.findMany()
+    * ```
+    */
+  get storeRequest(): Prisma.StoreRequestDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.vehicle`: Exposes CRUD operations for the **Vehicle** model.
@@ -676,6 +717,7 @@ export namespace Prisma {
   export const ModelName: {
     Store: 'Store',
     User: 'User',
+    StoreRequest: 'StoreRequest',
     Vehicle: 'Vehicle',
     LeadEvent: 'LeadEvent',
     VehicleImage: 'VehicleImage'
@@ -694,7 +736,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "store" | "user" | "vehicle" | "leadEvent" | "vehicleImage"
+      modelProps: "store" | "user" | "storeRequest" | "vehicle" | "leadEvent" | "vehicleImage"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -843,6 +885,80 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      StoreRequest: {
+        payload: Prisma.$StoreRequestPayload<ExtArgs>
+        fields: Prisma.StoreRequestFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StoreRequestFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoreRequestPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StoreRequestFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoreRequestPayload>
+          }
+          findFirst: {
+            args: Prisma.StoreRequestFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoreRequestPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StoreRequestFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoreRequestPayload>
+          }
+          findMany: {
+            args: Prisma.StoreRequestFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoreRequestPayload>[]
+          }
+          create: {
+            args: Prisma.StoreRequestCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoreRequestPayload>
+          }
+          createMany: {
+            args: Prisma.StoreRequestCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StoreRequestCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoreRequestPayload>[]
+          }
+          delete: {
+            args: Prisma.StoreRequestDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoreRequestPayload>
+          }
+          update: {
+            args: Prisma.StoreRequestUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoreRequestPayload>
+          }
+          deleteMany: {
+            args: Prisma.StoreRequestDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StoreRequestUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StoreRequestUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoreRequestPayload>[]
+          }
+          upsert: {
+            args: Prisma.StoreRequestUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoreRequestPayload>
+          }
+          aggregate: {
+            args: Prisma.StoreRequestAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStoreRequest>
+          }
+          groupBy: {
+            args: Prisma.StoreRequestGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StoreRequestGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StoreRequestCountArgs<ExtArgs>
+            result: $Utils.Optional<StoreRequestCountAggregateOutputType> | number
           }
         }
       }
@@ -1178,6 +1294,7 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     store?: StoreOmit
     user?: UserOmit
+    storeRequest?: StoreRequestOmit
     vehicle?: VehicleOmit
     leadEvent?: LeadEventOmit
     vehicleImage?: VehicleImageOmit
@@ -2566,7 +2683,7 @@ export namespace Prisma {
     email: string | null
     password: string | null
     name: string | null
-    role: string | null
+    role: $Enums.UserRole | null
     storeId: string | null
     createdAt: Date | null
   }
@@ -2576,7 +2693,7 @@ export namespace Prisma {
     email: string | null
     password: string | null
     name: string | null
-    role: string | null
+    role: $Enums.UserRole | null
     storeId: string | null
     createdAt: Date | null
   }
@@ -2701,7 +2818,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string | null
-    role: string
+    role: $Enums.UserRole
     storeId: string | null
     createdAt: Date
     _count: UserCountAggregateOutputType | null
@@ -2787,7 +2904,7 @@ export namespace Prisma {
       email: string
       password: string
       name: string | null
-      role: string
+      role: $Enums.UserRole
       storeId: string | null
       createdAt: Date
     }, ExtArgs["result"]["user"]>
@@ -3218,7 +3335,7 @@ export namespace Prisma {
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
     readonly name: FieldRef<"User", 'String'>
-    readonly role: FieldRef<"User", 'String'>
+    readonly role: FieldRef<"User", 'UserRole'>
     readonly storeId: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
   }
@@ -3656,6 +3773,1084 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model StoreRequest
+   */
+
+  export type AggregateStoreRequest = {
+    _count: StoreRequestCountAggregateOutputType | null
+    _min: StoreRequestMinAggregateOutputType | null
+    _max: StoreRequestMaxAggregateOutputType | null
+  }
+
+  export type StoreRequestMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    email: string | null
+    whatsapp: string | null
+    storeName: string | null
+    subdomain: string | null
+    message: string | null
+    status: $Enums.StoreRequestStatus | null
+    rejectedNote: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StoreRequestMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    email: string | null
+    whatsapp: string | null
+    storeName: string | null
+    subdomain: string | null
+    message: string | null
+    status: $Enums.StoreRequestStatus | null
+    rejectedNote: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StoreRequestCountAggregateOutputType = {
+    id: number
+    name: number
+    email: number
+    whatsapp: number
+    storeName: number
+    subdomain: number
+    message: number
+    status: number
+    rejectedNote: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type StoreRequestMinAggregateInputType = {
+    id?: true
+    name?: true
+    email?: true
+    whatsapp?: true
+    storeName?: true
+    subdomain?: true
+    message?: true
+    status?: true
+    rejectedNote?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StoreRequestMaxAggregateInputType = {
+    id?: true
+    name?: true
+    email?: true
+    whatsapp?: true
+    storeName?: true
+    subdomain?: true
+    message?: true
+    status?: true
+    rejectedNote?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StoreRequestCountAggregateInputType = {
+    id?: true
+    name?: true
+    email?: true
+    whatsapp?: true
+    storeName?: true
+    subdomain?: true
+    message?: true
+    status?: true
+    rejectedNote?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type StoreRequestAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StoreRequest to aggregate.
+     */
+    where?: StoreRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StoreRequests to fetch.
+     */
+    orderBy?: StoreRequestOrderByWithRelationInput | StoreRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StoreRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StoreRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StoreRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StoreRequests
+    **/
+    _count?: true | StoreRequestCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StoreRequestMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StoreRequestMaxAggregateInputType
+  }
+
+  export type GetStoreRequestAggregateType<T extends StoreRequestAggregateArgs> = {
+        [P in keyof T & keyof AggregateStoreRequest]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStoreRequest[P]>
+      : GetScalarType<T[P], AggregateStoreRequest[P]>
+  }
+
+
+
+
+  export type StoreRequestGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StoreRequestWhereInput
+    orderBy?: StoreRequestOrderByWithAggregationInput | StoreRequestOrderByWithAggregationInput[]
+    by: StoreRequestScalarFieldEnum[] | StoreRequestScalarFieldEnum
+    having?: StoreRequestScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StoreRequestCountAggregateInputType | true
+    _min?: StoreRequestMinAggregateInputType
+    _max?: StoreRequestMaxAggregateInputType
+  }
+
+  export type StoreRequestGroupByOutputType = {
+    id: string
+    name: string
+    email: string
+    whatsapp: string
+    storeName: string
+    subdomain: string
+    message: string | null
+    status: $Enums.StoreRequestStatus
+    rejectedNote: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: StoreRequestCountAggregateOutputType | null
+    _min: StoreRequestMinAggregateOutputType | null
+    _max: StoreRequestMaxAggregateOutputType | null
+  }
+
+  type GetStoreRequestGroupByPayload<T extends StoreRequestGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StoreRequestGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StoreRequestGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StoreRequestGroupByOutputType[P]>
+            : GetScalarType<T[P], StoreRequestGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StoreRequestSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    email?: boolean
+    whatsapp?: boolean
+    storeName?: boolean
+    subdomain?: boolean
+    message?: boolean
+    status?: boolean
+    rejectedNote?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["storeRequest"]>
+
+  export type StoreRequestSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    email?: boolean
+    whatsapp?: boolean
+    storeName?: boolean
+    subdomain?: boolean
+    message?: boolean
+    status?: boolean
+    rejectedNote?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["storeRequest"]>
+
+  export type StoreRequestSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    email?: boolean
+    whatsapp?: boolean
+    storeName?: boolean
+    subdomain?: boolean
+    message?: boolean
+    status?: boolean
+    rejectedNote?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["storeRequest"]>
+
+  export type StoreRequestSelectScalar = {
+    id?: boolean
+    name?: boolean
+    email?: boolean
+    whatsapp?: boolean
+    storeName?: boolean
+    subdomain?: boolean
+    message?: boolean
+    status?: boolean
+    rejectedNote?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type StoreRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "whatsapp" | "storeName" | "subdomain" | "message" | "status" | "rejectedNote" | "createdAt" | "updatedAt", ExtArgs["result"]["storeRequest"]>
+
+  export type $StoreRequestPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StoreRequest"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      email: string
+      whatsapp: string
+      storeName: string
+      subdomain: string
+      message: string | null
+      status: $Enums.StoreRequestStatus
+      rejectedNote: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["storeRequest"]>
+    composites: {}
+  }
+
+  type StoreRequestGetPayload<S extends boolean | null | undefined | StoreRequestDefaultArgs> = $Result.GetResult<Prisma.$StoreRequestPayload, S>
+
+  type StoreRequestCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StoreRequestFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StoreRequestCountAggregateInputType | true
+    }
+
+  export interface StoreRequestDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StoreRequest'], meta: { name: 'StoreRequest' } }
+    /**
+     * Find zero or one StoreRequest that matches the filter.
+     * @param {StoreRequestFindUniqueArgs} args - Arguments to find a StoreRequest
+     * @example
+     * // Get one StoreRequest
+     * const storeRequest = await prisma.storeRequest.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StoreRequestFindUniqueArgs>(args: SelectSubset<T, StoreRequestFindUniqueArgs<ExtArgs>>): Prisma__StoreRequestClient<$Result.GetResult<Prisma.$StoreRequestPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StoreRequest that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StoreRequestFindUniqueOrThrowArgs} args - Arguments to find a StoreRequest
+     * @example
+     * // Get one StoreRequest
+     * const storeRequest = await prisma.storeRequest.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StoreRequestFindUniqueOrThrowArgs>(args: SelectSubset<T, StoreRequestFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StoreRequestClient<$Result.GetResult<Prisma.$StoreRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StoreRequest that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StoreRequestFindFirstArgs} args - Arguments to find a StoreRequest
+     * @example
+     * // Get one StoreRequest
+     * const storeRequest = await prisma.storeRequest.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StoreRequestFindFirstArgs>(args?: SelectSubset<T, StoreRequestFindFirstArgs<ExtArgs>>): Prisma__StoreRequestClient<$Result.GetResult<Prisma.$StoreRequestPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StoreRequest that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StoreRequestFindFirstOrThrowArgs} args - Arguments to find a StoreRequest
+     * @example
+     * // Get one StoreRequest
+     * const storeRequest = await prisma.storeRequest.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StoreRequestFindFirstOrThrowArgs>(args?: SelectSubset<T, StoreRequestFindFirstOrThrowArgs<ExtArgs>>): Prisma__StoreRequestClient<$Result.GetResult<Prisma.$StoreRequestPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StoreRequests that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StoreRequestFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StoreRequests
+     * const storeRequests = await prisma.storeRequest.findMany()
+     * 
+     * // Get first 10 StoreRequests
+     * const storeRequests = await prisma.storeRequest.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const storeRequestWithIdOnly = await prisma.storeRequest.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StoreRequestFindManyArgs>(args?: SelectSubset<T, StoreRequestFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoreRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StoreRequest.
+     * @param {StoreRequestCreateArgs} args - Arguments to create a StoreRequest.
+     * @example
+     * // Create one StoreRequest
+     * const StoreRequest = await prisma.storeRequest.create({
+     *   data: {
+     *     // ... data to create a StoreRequest
+     *   }
+     * })
+     * 
+     */
+    create<T extends StoreRequestCreateArgs>(args: SelectSubset<T, StoreRequestCreateArgs<ExtArgs>>): Prisma__StoreRequestClient<$Result.GetResult<Prisma.$StoreRequestPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StoreRequests.
+     * @param {StoreRequestCreateManyArgs} args - Arguments to create many StoreRequests.
+     * @example
+     * // Create many StoreRequests
+     * const storeRequest = await prisma.storeRequest.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StoreRequestCreateManyArgs>(args?: SelectSubset<T, StoreRequestCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StoreRequests and returns the data saved in the database.
+     * @param {StoreRequestCreateManyAndReturnArgs} args - Arguments to create many StoreRequests.
+     * @example
+     * // Create many StoreRequests
+     * const storeRequest = await prisma.storeRequest.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StoreRequests and only return the `id`
+     * const storeRequestWithIdOnly = await prisma.storeRequest.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StoreRequestCreateManyAndReturnArgs>(args?: SelectSubset<T, StoreRequestCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoreRequestPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StoreRequest.
+     * @param {StoreRequestDeleteArgs} args - Arguments to delete one StoreRequest.
+     * @example
+     * // Delete one StoreRequest
+     * const StoreRequest = await prisma.storeRequest.delete({
+     *   where: {
+     *     // ... filter to delete one StoreRequest
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StoreRequestDeleteArgs>(args: SelectSubset<T, StoreRequestDeleteArgs<ExtArgs>>): Prisma__StoreRequestClient<$Result.GetResult<Prisma.$StoreRequestPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StoreRequest.
+     * @param {StoreRequestUpdateArgs} args - Arguments to update one StoreRequest.
+     * @example
+     * // Update one StoreRequest
+     * const storeRequest = await prisma.storeRequest.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StoreRequestUpdateArgs>(args: SelectSubset<T, StoreRequestUpdateArgs<ExtArgs>>): Prisma__StoreRequestClient<$Result.GetResult<Prisma.$StoreRequestPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StoreRequests.
+     * @param {StoreRequestDeleteManyArgs} args - Arguments to filter StoreRequests to delete.
+     * @example
+     * // Delete a few StoreRequests
+     * const { count } = await prisma.storeRequest.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StoreRequestDeleteManyArgs>(args?: SelectSubset<T, StoreRequestDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StoreRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StoreRequestUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StoreRequests
+     * const storeRequest = await prisma.storeRequest.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StoreRequestUpdateManyArgs>(args: SelectSubset<T, StoreRequestUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StoreRequests and returns the data updated in the database.
+     * @param {StoreRequestUpdateManyAndReturnArgs} args - Arguments to update many StoreRequests.
+     * @example
+     * // Update many StoreRequests
+     * const storeRequest = await prisma.storeRequest.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StoreRequests and only return the `id`
+     * const storeRequestWithIdOnly = await prisma.storeRequest.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StoreRequestUpdateManyAndReturnArgs>(args: SelectSubset<T, StoreRequestUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoreRequestPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StoreRequest.
+     * @param {StoreRequestUpsertArgs} args - Arguments to update or create a StoreRequest.
+     * @example
+     * // Update or create a StoreRequest
+     * const storeRequest = await prisma.storeRequest.upsert({
+     *   create: {
+     *     // ... data to create a StoreRequest
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StoreRequest we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StoreRequestUpsertArgs>(args: SelectSubset<T, StoreRequestUpsertArgs<ExtArgs>>): Prisma__StoreRequestClient<$Result.GetResult<Prisma.$StoreRequestPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StoreRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StoreRequestCountArgs} args - Arguments to filter StoreRequests to count.
+     * @example
+     * // Count the number of StoreRequests
+     * const count = await prisma.storeRequest.count({
+     *   where: {
+     *     // ... the filter for the StoreRequests we want to count
+     *   }
+     * })
+    **/
+    count<T extends StoreRequestCountArgs>(
+      args?: Subset<T, StoreRequestCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StoreRequestCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StoreRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StoreRequestAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StoreRequestAggregateArgs>(args: Subset<T, StoreRequestAggregateArgs>): Prisma.PrismaPromise<GetStoreRequestAggregateType<T>>
+
+    /**
+     * Group by StoreRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StoreRequestGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StoreRequestGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StoreRequestGroupByArgs['orderBy'] }
+        : { orderBy?: StoreRequestGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StoreRequestGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStoreRequestGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StoreRequest model
+   */
+  readonly fields: StoreRequestFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StoreRequest.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StoreRequestClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StoreRequest model
+   */
+  interface StoreRequestFieldRefs {
+    readonly id: FieldRef<"StoreRequest", 'String'>
+    readonly name: FieldRef<"StoreRequest", 'String'>
+    readonly email: FieldRef<"StoreRequest", 'String'>
+    readonly whatsapp: FieldRef<"StoreRequest", 'String'>
+    readonly storeName: FieldRef<"StoreRequest", 'String'>
+    readonly subdomain: FieldRef<"StoreRequest", 'String'>
+    readonly message: FieldRef<"StoreRequest", 'String'>
+    readonly status: FieldRef<"StoreRequest", 'StoreRequestStatus'>
+    readonly rejectedNote: FieldRef<"StoreRequest", 'String'>
+    readonly createdAt: FieldRef<"StoreRequest", 'DateTime'>
+    readonly updatedAt: FieldRef<"StoreRequest", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StoreRequest findUnique
+   */
+  export type StoreRequestFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoreRequest
+     */
+    select?: StoreRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoreRequest
+     */
+    omit?: StoreRequestOmit<ExtArgs> | null
+    /**
+     * Filter, which StoreRequest to fetch.
+     */
+    where: StoreRequestWhereUniqueInput
+  }
+
+  /**
+   * StoreRequest findUniqueOrThrow
+   */
+  export type StoreRequestFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoreRequest
+     */
+    select?: StoreRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoreRequest
+     */
+    omit?: StoreRequestOmit<ExtArgs> | null
+    /**
+     * Filter, which StoreRequest to fetch.
+     */
+    where: StoreRequestWhereUniqueInput
+  }
+
+  /**
+   * StoreRequest findFirst
+   */
+  export type StoreRequestFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoreRequest
+     */
+    select?: StoreRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoreRequest
+     */
+    omit?: StoreRequestOmit<ExtArgs> | null
+    /**
+     * Filter, which StoreRequest to fetch.
+     */
+    where?: StoreRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StoreRequests to fetch.
+     */
+    orderBy?: StoreRequestOrderByWithRelationInput | StoreRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StoreRequests.
+     */
+    cursor?: StoreRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StoreRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StoreRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StoreRequests.
+     */
+    distinct?: StoreRequestScalarFieldEnum | StoreRequestScalarFieldEnum[]
+  }
+
+  /**
+   * StoreRequest findFirstOrThrow
+   */
+  export type StoreRequestFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoreRequest
+     */
+    select?: StoreRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoreRequest
+     */
+    omit?: StoreRequestOmit<ExtArgs> | null
+    /**
+     * Filter, which StoreRequest to fetch.
+     */
+    where?: StoreRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StoreRequests to fetch.
+     */
+    orderBy?: StoreRequestOrderByWithRelationInput | StoreRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StoreRequests.
+     */
+    cursor?: StoreRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StoreRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StoreRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StoreRequests.
+     */
+    distinct?: StoreRequestScalarFieldEnum | StoreRequestScalarFieldEnum[]
+  }
+
+  /**
+   * StoreRequest findMany
+   */
+  export type StoreRequestFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoreRequest
+     */
+    select?: StoreRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoreRequest
+     */
+    omit?: StoreRequestOmit<ExtArgs> | null
+    /**
+     * Filter, which StoreRequests to fetch.
+     */
+    where?: StoreRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StoreRequests to fetch.
+     */
+    orderBy?: StoreRequestOrderByWithRelationInput | StoreRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StoreRequests.
+     */
+    cursor?: StoreRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StoreRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StoreRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StoreRequests.
+     */
+    distinct?: StoreRequestScalarFieldEnum | StoreRequestScalarFieldEnum[]
+  }
+
+  /**
+   * StoreRequest create
+   */
+  export type StoreRequestCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoreRequest
+     */
+    select?: StoreRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoreRequest
+     */
+    omit?: StoreRequestOmit<ExtArgs> | null
+    /**
+     * The data needed to create a StoreRequest.
+     */
+    data: XOR<StoreRequestCreateInput, StoreRequestUncheckedCreateInput>
+  }
+
+  /**
+   * StoreRequest createMany
+   */
+  export type StoreRequestCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StoreRequests.
+     */
+    data: StoreRequestCreateManyInput | StoreRequestCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StoreRequest createManyAndReturn
+   */
+  export type StoreRequestCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoreRequest
+     */
+    select?: StoreRequestSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoreRequest
+     */
+    omit?: StoreRequestOmit<ExtArgs> | null
+    /**
+     * The data used to create many StoreRequests.
+     */
+    data: StoreRequestCreateManyInput | StoreRequestCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StoreRequest update
+   */
+  export type StoreRequestUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoreRequest
+     */
+    select?: StoreRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoreRequest
+     */
+    omit?: StoreRequestOmit<ExtArgs> | null
+    /**
+     * The data needed to update a StoreRequest.
+     */
+    data: XOR<StoreRequestUpdateInput, StoreRequestUncheckedUpdateInput>
+    /**
+     * Choose, which StoreRequest to update.
+     */
+    where: StoreRequestWhereUniqueInput
+  }
+
+  /**
+   * StoreRequest updateMany
+   */
+  export type StoreRequestUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StoreRequests.
+     */
+    data: XOR<StoreRequestUpdateManyMutationInput, StoreRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which StoreRequests to update
+     */
+    where?: StoreRequestWhereInput
+    /**
+     * Limit how many StoreRequests to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StoreRequest updateManyAndReturn
+   */
+  export type StoreRequestUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoreRequest
+     */
+    select?: StoreRequestSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoreRequest
+     */
+    omit?: StoreRequestOmit<ExtArgs> | null
+    /**
+     * The data used to update StoreRequests.
+     */
+    data: XOR<StoreRequestUpdateManyMutationInput, StoreRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which StoreRequests to update
+     */
+    where?: StoreRequestWhereInput
+    /**
+     * Limit how many StoreRequests to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StoreRequest upsert
+   */
+  export type StoreRequestUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoreRequest
+     */
+    select?: StoreRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoreRequest
+     */
+    omit?: StoreRequestOmit<ExtArgs> | null
+    /**
+     * The filter to search for the StoreRequest to update in case it exists.
+     */
+    where: StoreRequestWhereUniqueInput
+    /**
+     * In case the StoreRequest found by the `where` argument doesn't exist, create a new StoreRequest with this data.
+     */
+    create: XOR<StoreRequestCreateInput, StoreRequestUncheckedCreateInput>
+    /**
+     * In case the StoreRequest was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StoreRequestUpdateInput, StoreRequestUncheckedUpdateInput>
+  }
+
+  /**
+   * StoreRequest delete
+   */
+  export type StoreRequestDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoreRequest
+     */
+    select?: StoreRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoreRequest
+     */
+    omit?: StoreRequestOmit<ExtArgs> | null
+    /**
+     * Filter which StoreRequest to delete.
+     */
+    where: StoreRequestWhereUniqueInput
+  }
+
+  /**
+   * StoreRequest deleteMany
+   */
+  export type StoreRequestDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StoreRequests to delete
+     */
+    where?: StoreRequestWhereInput
+    /**
+     * Limit how many StoreRequests to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StoreRequest without action
+   */
+  export type StoreRequestDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoreRequest
+     */
+    select?: StoreRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoreRequest
+     */
+    omit?: StoreRequestOmit<ExtArgs> | null
   }
 
 
@@ -7169,6 +8364,23 @@ export namespace Prisma {
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+  export const StoreRequestScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    email: 'email',
+    whatsapp: 'whatsapp',
+    storeName: 'storeName',
+    subdomain: 'subdomain',
+    message: 'message',
+    status: 'status',
+    rejectedNote: 'rejectedNote',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type StoreRequestScalarFieldEnum = (typeof StoreRequestScalarFieldEnum)[keyof typeof StoreRequestScalarFieldEnum]
+
+
   export const VehicleScalarFieldEnum: {
     id: 'id',
     make: 'make',
@@ -7279,6 +8491,34 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'UserRole'
+   */
+  export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
+    
+
+
+  /**
+   * Reference to a field of type 'UserRole[]'
+   */
+  export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'StoreRequestStatus'
+   */
+  export type EnumStoreRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StoreRequestStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'StoreRequestStatus[]'
+   */
+  export type ListEnumStoreRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StoreRequestStatus[]'>
     
 
 
@@ -7428,7 +8668,7 @@ export namespace Prisma {
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     name?: StringNullableFilter<"User"> | string | null
-    role?: StringFilter<"User"> | string
+    role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
     storeId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     store?: XOR<StoreNullableScalarRelationFilter, StoreWhereInput> | null
@@ -7453,7 +8693,7 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     password?: StringFilter<"User"> | string
     name?: StringNullableFilter<"User"> | string | null
-    role?: StringFilter<"User"> | string
+    role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
     storeId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     store?: XOR<StoreNullableScalarRelationFilter, StoreWhereInput> | null
@@ -7480,9 +8720,91 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
     name?: StringNullableWithAggregatesFilter<"User"> | string | null
-    role?: StringWithAggregatesFilter<"User"> | string
+    role?: EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
     storeId?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+  }
+
+  export type StoreRequestWhereInput = {
+    AND?: StoreRequestWhereInput | StoreRequestWhereInput[]
+    OR?: StoreRequestWhereInput[]
+    NOT?: StoreRequestWhereInput | StoreRequestWhereInput[]
+    id?: StringFilter<"StoreRequest"> | string
+    name?: StringFilter<"StoreRequest"> | string
+    email?: StringFilter<"StoreRequest"> | string
+    whatsapp?: StringFilter<"StoreRequest"> | string
+    storeName?: StringFilter<"StoreRequest"> | string
+    subdomain?: StringFilter<"StoreRequest"> | string
+    message?: StringNullableFilter<"StoreRequest"> | string | null
+    status?: EnumStoreRequestStatusFilter<"StoreRequest"> | $Enums.StoreRequestStatus
+    rejectedNote?: StringNullableFilter<"StoreRequest"> | string | null
+    createdAt?: DateTimeFilter<"StoreRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"StoreRequest"> | Date | string
+  }
+
+  export type StoreRequestOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    whatsapp?: SortOrder
+    storeName?: SortOrder
+    subdomain?: SortOrder
+    message?: SortOrderInput | SortOrder
+    status?: SortOrder
+    rejectedNote?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StoreRequestWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: StoreRequestWhereInput | StoreRequestWhereInput[]
+    OR?: StoreRequestWhereInput[]
+    NOT?: StoreRequestWhereInput | StoreRequestWhereInput[]
+    name?: StringFilter<"StoreRequest"> | string
+    email?: StringFilter<"StoreRequest"> | string
+    whatsapp?: StringFilter<"StoreRequest"> | string
+    storeName?: StringFilter<"StoreRequest"> | string
+    subdomain?: StringFilter<"StoreRequest"> | string
+    message?: StringNullableFilter<"StoreRequest"> | string | null
+    status?: EnumStoreRequestStatusFilter<"StoreRequest"> | $Enums.StoreRequestStatus
+    rejectedNote?: StringNullableFilter<"StoreRequest"> | string | null
+    createdAt?: DateTimeFilter<"StoreRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"StoreRequest"> | Date | string
+  }, "id">
+
+  export type StoreRequestOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    whatsapp?: SortOrder
+    storeName?: SortOrder
+    subdomain?: SortOrder
+    message?: SortOrderInput | SortOrder
+    status?: SortOrder
+    rejectedNote?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: StoreRequestCountOrderByAggregateInput
+    _max?: StoreRequestMaxOrderByAggregateInput
+    _min?: StoreRequestMinOrderByAggregateInput
+  }
+
+  export type StoreRequestScalarWhereWithAggregatesInput = {
+    AND?: StoreRequestScalarWhereWithAggregatesInput | StoreRequestScalarWhereWithAggregatesInput[]
+    OR?: StoreRequestScalarWhereWithAggregatesInput[]
+    NOT?: StoreRequestScalarWhereWithAggregatesInput | StoreRequestScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StoreRequest"> | string
+    name?: StringWithAggregatesFilter<"StoreRequest"> | string
+    email?: StringWithAggregatesFilter<"StoreRequest"> | string
+    whatsapp?: StringWithAggregatesFilter<"StoreRequest"> | string
+    storeName?: StringWithAggregatesFilter<"StoreRequest"> | string
+    subdomain?: StringWithAggregatesFilter<"StoreRequest"> | string
+    message?: StringNullableWithAggregatesFilter<"StoreRequest"> | string | null
+    status?: EnumStoreRequestStatusWithAggregatesFilter<"StoreRequest"> | $Enums.StoreRequestStatus
+    rejectedNote?: StringNullableWithAggregatesFilter<"StoreRequest"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"StoreRequest"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"StoreRequest"> | Date | string
   }
 
   export type VehicleWhereInput = {
@@ -7816,7 +9138,7 @@ export namespace Prisma {
     email: string
     password: string
     name?: string | null
-    role?: string
+    role?: $Enums.UserRole
     createdAt?: Date | string
     store?: StoreCreateNestedOneWithoutUsersInput
   }
@@ -7826,7 +9148,7 @@ export namespace Prisma {
     email: string
     password: string
     name?: string | null
-    role?: string
+    role?: $Enums.UserRole
     storeId?: string | null
     createdAt?: Date | string
   }
@@ -7836,7 +9158,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     store?: StoreUpdateOneWithoutUsersNestedInput
   }
@@ -7846,7 +9168,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     storeId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -7856,7 +9178,7 @@ export namespace Prisma {
     email: string
     password: string
     name?: string | null
-    role?: string
+    role?: $Enums.UserRole
     storeId?: string | null
     createdAt?: Date | string
   }
@@ -7866,7 +9188,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -7875,9 +9197,107 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     storeId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StoreRequestCreateInput = {
+    id?: string
+    name: string
+    email: string
+    whatsapp: string
+    storeName: string
+    subdomain: string
+    message?: string | null
+    status?: $Enums.StoreRequestStatus
+    rejectedNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StoreRequestUncheckedCreateInput = {
+    id?: string
+    name: string
+    email: string
+    whatsapp: string
+    storeName: string
+    subdomain: string
+    message?: string | null
+    status?: $Enums.StoreRequestStatus
+    rejectedNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StoreRequestUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    whatsapp?: StringFieldUpdateOperationsInput | string
+    storeName?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumStoreRequestStatusFieldUpdateOperationsInput | $Enums.StoreRequestStatus
+    rejectedNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StoreRequestUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    whatsapp?: StringFieldUpdateOperationsInput | string
+    storeName?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumStoreRequestStatusFieldUpdateOperationsInput | $Enums.StoreRequestStatus
+    rejectedNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StoreRequestCreateManyInput = {
+    id?: string
+    name: string
+    email: string
+    whatsapp: string
+    storeName: string
+    subdomain: string
+    message?: string | null
+    status?: $Enums.StoreRequestStatus
+    rejectedNote?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StoreRequestUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    whatsapp?: StringFieldUpdateOperationsInput | string
+    storeName?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumStoreRequestStatusFieldUpdateOperationsInput | $Enums.StoreRequestStatus
+    rejectedNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StoreRequestUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    whatsapp?: StringFieldUpdateOperationsInput | string
+    storeName?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumStoreRequestStatusFieldUpdateOperationsInput | $Enums.StoreRequestStatus
+    rejectedNote?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type VehicleCreateInput = {
@@ -8297,6 +9717,13 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type EnumUserRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
+  }
+
   export type StoreNullableScalarRelationFilter = {
     is?: StoreWhereInput | null
     isNot?: StoreWhereInput | null
@@ -8330,6 +9757,75 @@ export namespace Prisma {
     role?: SortOrder
     storeId?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type EnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumUserRoleFilter<$PrismaModel>
+    _max?: NestedEnumUserRoleFilter<$PrismaModel>
+  }
+
+  export type EnumStoreRequestStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.StoreRequestStatus | EnumStoreRequestStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.StoreRequestStatus[] | ListEnumStoreRequestStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StoreRequestStatus[] | ListEnumStoreRequestStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumStoreRequestStatusFilter<$PrismaModel> | $Enums.StoreRequestStatus
+  }
+
+  export type StoreRequestCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    whatsapp?: SortOrder
+    storeName?: SortOrder
+    subdomain?: SortOrder
+    message?: SortOrder
+    status?: SortOrder
+    rejectedNote?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StoreRequestMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    whatsapp?: SortOrder
+    storeName?: SortOrder
+    subdomain?: SortOrder
+    message?: SortOrder
+    status?: SortOrder
+    rejectedNote?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StoreRequestMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    whatsapp?: SortOrder
+    storeName?: SortOrder
+    subdomain?: SortOrder
+    message?: SortOrder
+    status?: SortOrder
+    rejectedNote?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumStoreRequestStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StoreRequestStatus | EnumStoreRequestStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.StoreRequestStatus[] | ListEnumStoreRequestStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StoreRequestStatus[] | ListEnumStoreRequestStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumStoreRequestStatusWithAggregatesFilter<$PrismaModel> | $Enums.StoreRequestStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumStoreRequestStatusFilter<$PrismaModel>
+    _max?: NestedEnumStoreRequestStatusFilter<$PrismaModel>
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -8708,6 +10204,10 @@ export namespace Prisma {
     connect?: StoreWhereUniqueInput
   }
 
+  export type EnumUserRoleFieldUpdateOperationsInput = {
+    set?: $Enums.UserRole
+  }
+
   export type StoreUpdateOneWithoutUsersNestedInput = {
     create?: XOR<StoreCreateWithoutUsersInput, StoreUncheckedCreateWithoutUsersInput>
     connectOrCreate?: StoreCreateOrConnectWithoutUsersInput
@@ -8716,6 +10216,10 @@ export namespace Prisma {
     delete?: StoreWhereInput | boolean
     connect?: StoreWhereUniqueInput
     update?: XOR<XOR<StoreUpdateToOneWithWhereWithoutUsersInput, StoreUpdateWithoutUsersInput>, StoreUncheckedUpdateWithoutUsersInput>
+  }
+
+  export type EnumStoreRequestStatusFieldUpdateOperationsInput = {
+    set?: $Enums.StoreRequestStatus
   }
 
   export type StoreCreateNestedOneWithoutVehiclesInput = {
@@ -9010,6 +10514,40 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedEnumUserRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
+  }
+
+  export type NestedEnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumUserRoleFilter<$PrismaModel>
+    _max?: NestedEnumUserRoleFilter<$PrismaModel>
+  }
+
+  export type NestedEnumStoreRequestStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.StoreRequestStatus | EnumStoreRequestStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.StoreRequestStatus[] | ListEnumStoreRequestStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StoreRequestStatus[] | ListEnumStoreRequestStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumStoreRequestStatusFilter<$PrismaModel> | $Enums.StoreRequestStatus
+  }
+
+  export type NestedEnumStoreRequestStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StoreRequestStatus | EnumStoreRequestStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.StoreRequestStatus[] | ListEnumStoreRequestStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StoreRequestStatus[] | ListEnumStoreRequestStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumStoreRequestStatusWithAggregatesFilter<$PrismaModel> | $Enums.StoreRequestStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumStoreRequestStatusFilter<$PrismaModel>
+    _max?: NestedEnumStoreRequestStatusFilter<$PrismaModel>
+  }
+
   export type NestedFloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -9134,7 +10672,7 @@ export namespace Prisma {
     email: string
     password: string
     name?: string | null
-    role?: string
+    role?: $Enums.UserRole
     createdAt?: Date | string
   }
 
@@ -9143,7 +10681,7 @@ export namespace Prisma {
     email: string
     password: string
     name?: string | null
-    role?: string
+    role?: $Enums.UserRole
     createdAt?: Date | string
   }
 
@@ -9241,7 +10779,7 @@ export namespace Prisma {
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     name?: StringNullableFilter<"User"> | string | null
-    role?: StringFilter<"User"> | string
+    role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
     storeId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
   }
@@ -9789,7 +11327,7 @@ export namespace Prisma {
     email: string
     password: string
     name?: string | null
-    role?: string
+    role?: $Enums.UserRole
     createdAt?: Date | string
   }
 
@@ -9857,7 +11395,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -9866,7 +11404,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -9875,7 +11413,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

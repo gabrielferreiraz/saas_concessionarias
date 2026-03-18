@@ -30,16 +30,47 @@ model Store {
   createdAt    DateTime    @default(now())
 }
 
+
+enum UserRole {
+  SUPER_ADMIN
+  STORE_ADMIN
+  STORE_USER
+}
+
+enum StoreRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String    @id @default(cuid())
+  email     String    @unique
   password  String
   name      String?
-  role      String   @default("USER")
+  role      UserRole  @default(STORE_ADMIN)
   storeId   String?
-  store     Store?   @relation(fields: [storeId], references: [id])
-  createdAt DateTime @default(now())
+  store     Store?    @relation(fields: [storeId], references: [id])
+  createdAt DateTime  @default(now())
 }
+
+
+model StoreRequest {
+  id           String             @id @default(cuid())
+  name         String
+  email        String
+  whatsapp     String
+  storeName    String
+  subdomain    String
+  message      String?
+  status       StoreRequestStatus @default(PENDING)
+  rejectedNote String?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @default(now()) @updatedAt
+
+  @@index([status])
+}
+
 
 model Vehicle {
   id          String      @id @default(cuid())

@@ -12,10 +12,15 @@ export default withAuth(
     callbacks: {
       authorized: ({ token, req }) => {
         if (!token) return false
-        // Garante que usuário admin sempre tem storeId no token
+
+        if (req.nextUrl.pathname.startsWith("/super-admin")) {
+          return token.role === "SUPER_ADMIN"
+        }
+
         if (req.nextUrl.pathname.startsWith("/admin")) {
           return !!token.storeId
         }
+
         return true
       },
     },
@@ -23,5 +28,5 @@ export default withAuth(
 )
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/super-admin/:path*"],
 }

@@ -1,37 +1,35 @@
-import { PrismaClient } from '@prisma/client'
-import bcrypt from 'bcryptjs' // Ou a lib que você usa para hash
+import "dotenv/config"
+import { Pool } from "pg"
+import { PrismaPg } from "@prisma/adapter-pg"
+import { PrismaClient } from "./prisma/generated/client"
+import bcrypt from "bcryptjs"
 
-const prisma = new PrismaClient()
+const pool = new Pool({ connectionString: process.env.DATABASE_URL })
+const adapter = new PrismaPg(pool)
+const prisma = new PrismaClient({ adapter })
 
 async function main() {
-  const passwordHash = await bcrypt.hash('SuaSenhaSegura123', 10)
+  const passwordHash = await bcrypt.hash("SuaSenhaSegura123!", 12)
 
-  // 1. Criar o Usuário Admin
-  const user = await prisma.user.upsert({
-    where: { email: 'gabriel@saas.com' },
-    update: {},
-    create: {
-      email: 'gabriel@saas.com',
-      name: 'Gabriel',
+  await prisma.user.upsert({
+    where: { email: "gabriel@saas.com" },
+    update: {
+      role: "SUPER_ADMIN",
       password: passwordHash,
-      role: 'ADMIN', // Verifique se o seu schema tem esse campo
+      storeId: null,
     },
-  })
-
-  // 2. Criar a Loja Principal
-  const store = await prisma.store.upsert({
-    where: { subdomain: 'premium' },
-    update: {},
     create: {
-      name: 'Concessionária Premium',
-      subdomain: 'premium',
-      slug: 'premium-auto',
-      whatsapp: '5567999999999',
-      primaryColor: '#000000',
+      email: "gabriel@saas.com",
+      name: "Gabriel",
+      password: passwordHash,
+      role: "SUPER_ADMIN",
+      storeId: null,
     },
   })
 
-  console.log('✅ Admin e Loja criados com sucesso!')
+  console.log("✅ Super Admin criado com sucesso!")
+  console.log("Email: gabriel@saas.com")
+  console.log("Senha: SuaSenhaSegura123!")
 }
 
 main()
@@ -41,4 +39,5 @@ main()
   })
   .finally(async () => {
     await prisma.$disconnect()
+    await pool.end()
   })
