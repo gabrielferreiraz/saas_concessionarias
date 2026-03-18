@@ -7,10 +7,11 @@ import { VehicleForm } from "@/components/vehicle-form"
 export default async function EditarVeiculoPage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
-  const session = await getServerSession(authOptions)
+  const { id } = await params
 
+  const session = await getServerSession(authOptions)
   if (!session?.user?.email) notFound()
 
   const user = await prisma.user.findUnique({
@@ -20,10 +21,9 @@ export default async function EditarVeiculoPage({
   if (!user?.storeId) notFound()
 
   const vehicle = await prisma.vehicle.findUnique({
-    where: { id: params.id },
+    where: { id },
   })
 
-  // Garante que o veículo pertence à loja do usuário logado
   if (!vehicle || vehicle.storeId !== user.storeId) notFound()
 
   return (
