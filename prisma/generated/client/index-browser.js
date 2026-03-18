@@ -150,11 +150,14 @@ exports.Prisma.VehicleScalarFieldEnum = {
   year: 'year',
   price: 'price',
   km: 'km',
+  color: 'color',
+  fuelType: 'fuelType',
   description: 'description',
   featured: 'featured',
   status: 'status',
   storeId: 'storeId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.LeadEventScalarFieldEnum = {

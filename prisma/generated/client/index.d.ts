@@ -3690,11 +3690,14 @@ export namespace Prisma {
     year: number | null
     price: number | null
     km: number | null
+    color: string | null
+    fuelType: string | null
     description: string | null
     featured: boolean | null
     status: $Enums.Status | null
     storeId: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type VehicleMaxAggregateOutputType = {
@@ -3704,11 +3707,14 @@ export namespace Prisma {
     year: number | null
     price: number | null
     km: number | null
+    color: string | null
+    fuelType: string | null
     description: string | null
     featured: boolean | null
     status: $Enums.Status | null
     storeId: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type VehicleCountAggregateOutputType = {
@@ -3718,11 +3724,14 @@ export namespace Prisma {
     year: number
     price: number
     km: number
+    color: number
+    fuelType: number
     description: number
     featured: number
     status: number
     storeId: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -3746,11 +3755,14 @@ export namespace Prisma {
     year?: true
     price?: true
     km?: true
+    color?: true
+    fuelType?: true
     description?: true
     featured?: true
     status?: true
     storeId?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type VehicleMaxAggregateInputType = {
@@ -3760,11 +3772,14 @@ export namespace Prisma {
     year?: true
     price?: true
     km?: true
+    color?: true
+    fuelType?: true
     description?: true
     featured?: true
     status?: true
     storeId?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type VehicleCountAggregateInputType = {
@@ -3774,11 +3789,14 @@ export namespace Prisma {
     year?: true
     price?: true
     km?: true
+    color?: true
+    fuelType?: true
     description?: true
     featured?: true
     status?: true
     storeId?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -3875,11 +3893,14 @@ export namespace Prisma {
     year: number
     price: number
     km: number
+    color: string | null
+    fuelType: string | null
     description: string | null
     featured: boolean
     status: $Enums.Status
     storeId: string
     createdAt: Date
+    updatedAt: Date
     _count: VehicleCountAggregateOutputType | null
     _avg: VehicleAvgAggregateOutputType | null
     _sum: VehicleSumAggregateOutputType | null
@@ -3908,11 +3929,14 @@ export namespace Prisma {
     year?: boolean
     price?: boolean
     km?: boolean
+    color?: boolean
+    fuelType?: boolean
     description?: boolean
     featured?: boolean
     status?: boolean
     storeId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     store?: boolean | StoreDefaultArgs<ExtArgs>
     images?: boolean | Vehicle$imagesArgs<ExtArgs>
     leadEvents?: boolean | Vehicle$leadEventsArgs<ExtArgs>
@@ -3926,11 +3950,14 @@ export namespace Prisma {
     year?: boolean
     price?: boolean
     km?: boolean
+    color?: boolean
+    fuelType?: boolean
     description?: boolean
     featured?: boolean
     status?: boolean
     storeId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     store?: boolean | StoreDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["vehicle"]>
 
@@ -3941,11 +3968,14 @@ export namespace Prisma {
     year?: boolean
     price?: boolean
     km?: boolean
+    color?: boolean
+    fuelType?: boolean
     description?: boolean
     featured?: boolean
     status?: boolean
     storeId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     store?: boolean | StoreDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["vehicle"]>
 
@@ -3956,14 +3986,17 @@ export namespace Prisma {
     year?: boolean
     price?: boolean
     km?: boolean
+    color?: boolean
+    fuelType?: boolean
     description?: boolean
     featured?: boolean
     status?: boolean
     storeId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type VehicleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "make" | "model" | "year" | "price" | "km" | "description" | "featured" | "status" | "storeId" | "createdAt", ExtArgs["result"]["vehicle"]>
+  export type VehicleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "make" | "model" | "year" | "price" | "km" | "color" | "fuelType" | "description" | "featured" | "status" | "storeId" | "createdAt" | "updatedAt", ExtArgs["result"]["vehicle"]>
   export type VehicleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     store?: boolean | StoreDefaultArgs<ExtArgs>
     images?: boolean | Vehicle$imagesArgs<ExtArgs>
@@ -3991,11 +4024,14 @@ export namespace Prisma {
       year: number
       price: number
       km: number
+      color: string | null
+      fuelType: string | null
       description: string | null
       featured: boolean
       status: $Enums.Status
       storeId: string
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["vehicle"]>
     composites: {}
   }
@@ -4428,11 +4464,14 @@ export namespace Prisma {
     readonly year: FieldRef<"Vehicle", 'Int'>
     readonly price: FieldRef<"Vehicle", 'Float'>
     readonly km: FieldRef<"Vehicle", 'Int'>
+    readonly color: FieldRef<"Vehicle", 'String'>
+    readonly fuelType: FieldRef<"Vehicle", 'String'>
     readonly description: FieldRef<"Vehicle", 'String'>
     readonly featured: FieldRef<"Vehicle", 'Boolean'>
     readonly status: FieldRef<"Vehicle", 'Status'>
     readonly storeId: FieldRef<"Vehicle", 'String'>
     readonly createdAt: FieldRef<"Vehicle", 'DateTime'>
+    readonly updatedAt: FieldRef<"Vehicle", 'DateTime'>
   }
     
 
@@ -7137,11 +7176,14 @@ export namespace Prisma {
     year: 'year',
     price: 'price',
     km: 'km',
+    color: 'color',
+    fuelType: 'fuelType',
     description: 'description',
     featured: 'featured',
     status: 'status',
     storeId: 'storeId',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type VehicleScalarFieldEnum = (typeof VehicleScalarFieldEnum)[keyof typeof VehicleScalarFieldEnum]
@@ -7453,11 +7495,14 @@ export namespace Prisma {
     year?: IntFilter<"Vehicle"> | number
     price?: FloatFilter<"Vehicle"> | number
     km?: IntFilter<"Vehicle"> | number
+    color?: StringNullableFilter<"Vehicle"> | string | null
+    fuelType?: StringNullableFilter<"Vehicle"> | string | null
     description?: StringNullableFilter<"Vehicle"> | string | null
     featured?: BoolFilter<"Vehicle"> | boolean
     status?: EnumStatusFilter<"Vehicle"> | $Enums.Status
     storeId?: StringFilter<"Vehicle"> | string
     createdAt?: DateTimeFilter<"Vehicle"> | Date | string
+    updatedAt?: DateTimeFilter<"Vehicle"> | Date | string
     store?: XOR<StoreScalarRelationFilter, StoreWhereInput>
     images?: VehicleImageListRelationFilter
     leadEvents?: LeadEventListRelationFilter
@@ -7470,11 +7515,14 @@ export namespace Prisma {
     year?: SortOrder
     price?: SortOrder
     km?: SortOrder
+    color?: SortOrderInput | SortOrder
+    fuelType?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     featured?: SortOrder
     status?: SortOrder
     storeId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     store?: StoreOrderByWithRelationInput
     images?: VehicleImageOrderByRelationAggregateInput
     leadEvents?: LeadEventOrderByRelationAggregateInput
@@ -7490,11 +7538,14 @@ export namespace Prisma {
     year?: IntFilter<"Vehicle"> | number
     price?: FloatFilter<"Vehicle"> | number
     km?: IntFilter<"Vehicle"> | number
+    color?: StringNullableFilter<"Vehicle"> | string | null
+    fuelType?: StringNullableFilter<"Vehicle"> | string | null
     description?: StringNullableFilter<"Vehicle"> | string | null
     featured?: BoolFilter<"Vehicle"> | boolean
     status?: EnumStatusFilter<"Vehicle"> | $Enums.Status
     storeId?: StringFilter<"Vehicle"> | string
     createdAt?: DateTimeFilter<"Vehicle"> | Date | string
+    updatedAt?: DateTimeFilter<"Vehicle"> | Date | string
     store?: XOR<StoreScalarRelationFilter, StoreWhereInput>
     images?: VehicleImageListRelationFilter
     leadEvents?: LeadEventListRelationFilter
@@ -7507,11 +7558,14 @@ export namespace Prisma {
     year?: SortOrder
     price?: SortOrder
     km?: SortOrder
+    color?: SortOrderInput | SortOrder
+    fuelType?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     featured?: SortOrder
     status?: SortOrder
     storeId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: VehicleCountOrderByAggregateInput
     _avg?: VehicleAvgOrderByAggregateInput
     _max?: VehicleMaxOrderByAggregateInput
@@ -7529,11 +7583,14 @@ export namespace Prisma {
     year?: IntWithAggregatesFilter<"Vehicle"> | number
     price?: FloatWithAggregatesFilter<"Vehicle"> | number
     km?: IntWithAggregatesFilter<"Vehicle"> | number
+    color?: StringNullableWithAggregatesFilter<"Vehicle"> | string | null
+    fuelType?: StringNullableWithAggregatesFilter<"Vehicle"> | string | null
     description?: StringNullableWithAggregatesFilter<"Vehicle"> | string | null
     featured?: BoolWithAggregatesFilter<"Vehicle"> | boolean
     status?: EnumStatusWithAggregatesFilter<"Vehicle"> | $Enums.Status
     storeId?: StringWithAggregatesFilter<"Vehicle"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Vehicle"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Vehicle"> | Date | string
   }
 
   export type LeadEventWhereInput = {
@@ -7830,10 +7887,13 @@ export namespace Prisma {
     year: number
     price: number
     km: number
+    color?: string | null
+    fuelType?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
     createdAt?: Date | string
+    updatedAt?: Date | string
     store: StoreCreateNestedOneWithoutVehiclesInput
     images?: VehicleImageCreateNestedManyWithoutVehicleInput
     leadEvents?: LeadEventCreateNestedManyWithoutVehicleInput
@@ -7846,11 +7906,14 @@ export namespace Prisma {
     year: number
     price: number
     km: number
+    color?: string | null
+    fuelType?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
     storeId: string
     createdAt?: Date | string
+    updatedAt?: Date | string
     images?: VehicleImageUncheckedCreateNestedManyWithoutVehicleInput
     leadEvents?: LeadEventUncheckedCreateNestedManyWithoutVehicleInput
   }
@@ -7862,10 +7925,13 @@ export namespace Prisma {
     year?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     km?: IntFieldUpdateOperationsInput | number
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    fuelType?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     store?: StoreUpdateOneRequiredWithoutVehiclesNestedInput
     images?: VehicleImageUpdateManyWithoutVehicleNestedInput
     leadEvents?: LeadEventUpdateManyWithoutVehicleNestedInput
@@ -7878,11 +7944,14 @@ export namespace Prisma {
     year?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     km?: IntFieldUpdateOperationsInput | number
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    fuelType?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     storeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     images?: VehicleImageUncheckedUpdateManyWithoutVehicleNestedInput
     leadEvents?: LeadEventUncheckedUpdateManyWithoutVehicleNestedInput
   }
@@ -7894,11 +7963,14 @@ export namespace Prisma {
     year: number
     price: number
     km: number
+    color?: string | null
+    fuelType?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
     storeId: string
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type VehicleUpdateManyMutationInput = {
@@ -7908,10 +7980,13 @@ export namespace Prisma {
     year?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     km?: IntFieldUpdateOperationsInput | number
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    fuelType?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type VehicleUncheckedUpdateManyInput = {
@@ -7921,11 +7996,14 @@ export namespace Prisma {
     year?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     km?: IntFieldUpdateOperationsInput | number
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    fuelType?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     storeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type LeadEventCreateInput = {
@@ -8310,11 +8388,14 @@ export namespace Prisma {
     year?: SortOrder
     price?: SortOrder
     km?: SortOrder
+    color?: SortOrder
+    fuelType?: SortOrder
     description?: SortOrder
     featured?: SortOrder
     status?: SortOrder
     storeId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type VehicleAvgOrderByAggregateInput = {
@@ -8330,11 +8411,14 @@ export namespace Prisma {
     year?: SortOrder
     price?: SortOrder
     km?: SortOrder
+    color?: SortOrder
+    fuelType?: SortOrder
     description?: SortOrder
     featured?: SortOrder
     status?: SortOrder
     storeId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type VehicleMinOrderByAggregateInput = {
@@ -8344,11 +8428,14 @@ export namespace Prisma {
     year?: SortOrder
     price?: SortOrder
     km?: SortOrder
+    color?: SortOrder
+    fuelType?: SortOrder
     description?: SortOrder
     featured?: SortOrder
     status?: SortOrder
     storeId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type VehicleSumOrderByAggregateInput = {
@@ -9003,10 +9090,13 @@ export namespace Prisma {
     year: number
     price: number
     km: number
+    color?: string | null
+    fuelType?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
     createdAt?: Date | string
+    updatedAt?: Date | string
     images?: VehicleImageCreateNestedManyWithoutVehicleInput
     leadEvents?: LeadEventCreateNestedManyWithoutVehicleInput
   }
@@ -9018,10 +9108,13 @@ export namespace Prisma {
     year: number
     price: number
     km: number
+    color?: string | null
+    fuelType?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
     createdAt?: Date | string
+    updatedAt?: Date | string
     images?: VehicleImageUncheckedCreateNestedManyWithoutVehicleInput
     leadEvents?: LeadEventUncheckedCreateNestedManyWithoutVehicleInput
   }
@@ -9114,11 +9207,14 @@ export namespace Prisma {
     year?: IntFilter<"Vehicle"> | number
     price?: FloatFilter<"Vehicle"> | number
     km?: IntFilter<"Vehicle"> | number
+    color?: StringNullableFilter<"Vehicle"> | string | null
+    fuelType?: StringNullableFilter<"Vehicle"> | string | null
     description?: StringNullableFilter<"Vehicle"> | string | null
     featured?: BoolFilter<"Vehicle"> | boolean
     status?: EnumStatusFilter<"Vehicle"> | $Enums.Status
     storeId?: StringFilter<"Vehicle"> | string
     createdAt?: DateTimeFilter<"Vehicle"> | Date | string
+    updatedAt?: DateTimeFilter<"Vehicle"> | Date | string
   }
 
   export type UserUpsertWithWhereUniqueWithoutStoreInput = {
@@ -9427,10 +9523,13 @@ export namespace Prisma {
     year: number
     price: number
     km: number
+    color?: string | null
+    fuelType?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
     createdAt?: Date | string
+    updatedAt?: Date | string
     store: StoreCreateNestedOneWithoutVehiclesInput
     images?: VehicleImageCreateNestedManyWithoutVehicleInput
   }
@@ -9442,11 +9541,14 @@ export namespace Prisma {
     year: number
     price: number
     km: number
+    color?: string | null
+    fuelType?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
     storeId: string
     createdAt?: Date | string
+    updatedAt?: Date | string
     images?: VehicleImageUncheckedCreateNestedManyWithoutVehicleInput
   }
 
@@ -9508,10 +9610,13 @@ export namespace Prisma {
     year?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     km?: IntFieldUpdateOperationsInput | number
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    fuelType?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     store?: StoreUpdateOneRequiredWithoutVehiclesNestedInput
     images?: VehicleImageUpdateManyWithoutVehicleNestedInput
   }
@@ -9523,11 +9628,14 @@ export namespace Prisma {
     year?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     km?: IntFieldUpdateOperationsInput | number
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    fuelType?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     storeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     images?: VehicleImageUncheckedUpdateManyWithoutVehicleNestedInput
   }
 
@@ -9579,10 +9687,13 @@ export namespace Prisma {
     year: number
     price: number
     km: number
+    color?: string | null
+    fuelType?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
     createdAt?: Date | string
+    updatedAt?: Date | string
     store: StoreCreateNestedOneWithoutVehiclesInput
     leadEvents?: LeadEventCreateNestedManyWithoutVehicleInput
   }
@@ -9594,11 +9705,14 @@ export namespace Prisma {
     year: number
     price: number
     km: number
+    color?: string | null
+    fuelType?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
     storeId: string
     createdAt?: Date | string
+    updatedAt?: Date | string
     leadEvents?: LeadEventUncheckedCreateNestedManyWithoutVehicleInput
   }
 
@@ -9625,10 +9739,13 @@ export namespace Prisma {
     year?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     km?: IntFieldUpdateOperationsInput | number
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    fuelType?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     store?: StoreUpdateOneRequiredWithoutVehiclesNestedInput
     leadEvents?: LeadEventUpdateManyWithoutVehicleNestedInput
   }
@@ -9640,11 +9757,14 @@ export namespace Prisma {
     year?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     km?: IntFieldUpdateOperationsInput | number
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    fuelType?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     storeId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     leadEvents?: LeadEventUncheckedUpdateManyWithoutVehicleNestedInput
   }
 
@@ -9655,10 +9775,13 @@ export namespace Prisma {
     year: number
     price: number
     km: number
+    color?: string | null
+    fuelType?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UserCreateManyStoreInput = {
@@ -9684,10 +9807,13 @@ export namespace Prisma {
     year?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     km?: IntFieldUpdateOperationsInput | number
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    fuelType?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     images?: VehicleImageUpdateManyWithoutVehicleNestedInput
     leadEvents?: LeadEventUpdateManyWithoutVehicleNestedInput
   }
@@ -9699,10 +9825,13 @@ export namespace Prisma {
     year?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     km?: IntFieldUpdateOperationsInput | number
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    fuelType?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     images?: VehicleImageUncheckedUpdateManyWithoutVehicleNestedInput
     leadEvents?: LeadEventUncheckedUpdateManyWithoutVehicleNestedInput
   }
@@ -9714,10 +9843,13 @@ export namespace Prisma {
     year?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
     km?: IntFieldUpdateOperationsInput | number
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    fuelType?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserUpdateWithoutStoreInput = {

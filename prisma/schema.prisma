@@ -48,16 +48,20 @@ model Vehicle {
   year        Int
   price       Float
   km          Int
+  color       String?
+  fuelType    String?
   description String?
   featured    Boolean     @default(false)
   status      Status      @default(AVAILABLE)
   storeId     String
   store       Store       @relation(fields: [storeId], references: [id])
   createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @default(now()) @updatedAt
   images      VehicleImage[]
   leadEvents  LeadEvent[]
 
   @@index([storeId])
+  @@index([status])
 }
 
 model LeadEvent {

@@ -1,26 +1,22 @@
 "use client"
 
 import { useState } from "react"
-import { createVehicleAction } from "@/src/actions/vehicles"
+import { useRouter } from "next/navigation"
+import { createVehicleAction, updateVehicleAction } from "@/src/actions/vehicles"
 import { useToast } from "@/hooks/use-toast"
 import { ImageUploader } from "@/components/image-uploader"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem,
+  SelectTrigger, SelectValue,
 } from "@/components/ui/select"
 import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-  FieldSet,
-  FieldLegend,
+  Field, FieldGroup, FieldLabel,
+  FieldSet, FieldLegend,
 } from "@/components/ui/field"
 import { Car, Loader2, Save, X } from "lucide-react"
 
@@ -38,44 +34,49 @@ interface VehicleFormData {
   price: string
   color: string
   fuelType: string
+  featured: boolean
+  status: "AVAILABLE" | "RESERVED" | "SOLD"
   highlights: string[]
   description: string
 }
 
+interface VehicleFormProps {
+  // Para modo edição — passa os dados existentes
+  editVehicle?: {
+    id: string
+    make: string
+    model: string
+    year: number
+    km: number
+    price: number
+    color?: string | null
+    fuelType?: string | null
+    featured: boolean
+    status: "AVAILABLE" | "RESERVED" | "SOLD"
+    description?: string | null
+  }
+}
+
 const MAKES = [
-  "Audi",
-  "BMW",
-  "Ferrari",
-  "Lamborghini",
-  "Land Rover",
-  "Maserati",
-  "Mercedes-Benz",
-  "Porsche",
-  "Rolls-Royce",
-  "Volvo",
-]
+  "Chevrolet", "Fiat", "Volkswagen", "Toyota", "Honda",
+  "Hyundai", "Renault", "Ford", "Nissan", "Jeep",
+  "Peugeot", "Citroën", "Mitsubishi", "Kia", "BMW",
+  "Mercedes-Benz", "Audi", "Volvo", "Land Rover", "Porsche",
+  "Ferrari", "Lamborghini", "Maserati", "Rolls-Royce",
+].sort()
 
 const FUEL_TYPES = [
+  { value: "flex", label: "Flex" },
   { value: "gasolina", label: "Gasolina" },
   { value: "etanol", label: "Etanol" },
-  { value: "flex", label: "Flex" },
   { value: "diesel", label: "Diesel" },
   { value: "eletrico", label: "Elétrico" },
   { value: "hibrido", label: "Híbrido" },
 ]
 
 const COLORS = [
-  "Branco",
-  "Preto",
-  "Prata",
-  "Cinza",
-  "Vermelho",
-  "Azul",
-  "Verde",
-  "Marrom",
-  "Bege",
-  "Amarelo",
-  "Laranja",
+  "Branco", "Preto", "Prata", "Cinza", "Vermelho",
+  "Azul", "Verde", "Marrom", "Bege", "Amarelo", "Laranja",
 ]
 
 const HIGHLIGHTS = [
@@ -102,104 +103,107 @@ function parseKmToNumber(value: string): number {
   return parseInt(value.replace(/\D/g, ""), 10) || 0
 }
 
-const INITIAL_FORM_DATA: VehicleFormData = {
-  make: "",
-  model: "",
-  year: "",
-  km: "",
-  price: "",
-  color: "",
-  fuelType: "",
-  highlights: [],
-  description: "",
+function formatCurrency(value: string): string {
+  const numbers = value.replace(/\D/g, "")
+  if (!numbers) return ""
+  const amount = parseInt(numbers, 10) / 100
+  return amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
 }
 
-export function VehicleForm() {
+function formatKm(value: string): string {
+  const numbers = value.replace(/\D/g, "")
+  if (!numbers) return ""
+  return parseInt(numbers, 10).toLocaleString("pt-BR")
+}
+
+function numberToCurrencyString(value: number): string {
+  return formatCurrency(String(Math.round(value * 100)))
+}
+
+function numberToKmString(value: number): string {
+  return formatKm(String(value))
+}
+
+export function VehicleForm({ editVehicle }: VehicleFormProps) {
+  const router = useRouter()
   const { toast } = useToast()
+  const isEditing = !!editVehicle
+
   const [images, setImages] = useState<UploadedImage[]>([])
   const [isPending, setIsPending] = useState(false)
-  const [formData, setFormData] = useState<VehicleFormData>(INITIAL_FORM_DATA)
+  const [formData, setFormData] = useState<VehicleFormData>({
+    make: editVehicle?.make ?? "",
+    model: editVehicle?.model ?? "",
+    year: editVehicle?.year?.toString() ?? "",
+    km: editVehicle ? numberToKmString(editVehicle.km) : "",
+    price: editVehicle ? numberToCurrencyString(editVehicle.price) : "",
+    color: editVehicle?.color ?? "",
+    fuelType: editVehicle?.fuelType ?? "",
+    featured: editVehicle?.featured ?? false,
+    status: editVehicle?.status ?? "AVAILABLE",
+    highlights: [],
+    description: editVehicle?.description ?? "",
+  })
 
-  const formatCurrency = (value: string) => {
-    const numbers = value.replace(/\D/g, "")
-    if (!numbers) return ""
-    const amount = parseInt(numbers, 10) / 100
-    return amount.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    })
-  }
-
-  const formatKm = (value: string) => {
-    const numbers = value.replace(/\D/g, "")
-    if (!numbers) return ""
-    return parseInt(numbers, 10).toLocaleString("pt-BR")
-  }
-
-  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatCurrency(e.target.value)
-    setFormData((prev) => ({ ...prev, price: formatted }))
-  }
-
-  const handleKmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatKm(e.target.value)
-    setFormData((prev) => ({ ...prev, km: formatted }))
-  }
-
-  const handleHighlightToggle = (highlightId: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      highlights: prev.highlights.includes(highlightId)
-        ? prev.highlights.filter((id) => id !== highlightId)
-        : [...prev.highlights, highlightId],
-    }))
-  }
+  const currentYear = new Date().getFullYear()
+  const years = Array.from({ length: 35 }, (_, i) => currentYear + 1 - i)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const filesToUpload = images.map((img) => img.file)
-
-    if (filesToUpload.length === 0) {
+    if (!isEditing && images.length === 0) {
       toast({
         title: "Selecione pelo menos uma foto",
-        description: "A primeira imagem será usada como capa do veículo.",
-        variant: "destructive",
-      })
-      return
-    }
-
-    if (filesToUpload.length > 10) {
-      toast({
-        title: "Limite de imagens excedido",
-        description: "Você pode enviar no máximo 10 fotos por veículo.",
+        description: "A primeira imagem será usada como capa.",
         variant: "destructive",
       })
       return
     }
 
     setIsPending(true)
+
     try {
-      await createVehicleAction({
-        make: formData.make || "",
-        model: formData.model || "",
-        year: formData.year ? parseInt(formData.year, 10) : new Date().getFullYear(),
-        price: parsePriceToNumber(formData.price),
-        km: parseKmToNumber(formData.km),
-        description: formData.description || undefined,
-        featured: false,
-        status: "AVAILABLE",
-        imageFiles: filesToUpload,
-      })
-      setFormData(INITIAL_FORM_DATA)
-      images.forEach((img) => URL.revokeObjectURL(img.preview))
-      setImages([])
-      toast({
-        title: "Veículo cadastrado com sucesso!",
-      })
+      if (isEditing) {
+        const result = await updateVehicleAction({
+          id: editVehicle.id,
+          make: formData.make,
+          model: formData.model,
+          year: parseInt(formData.year, 10),
+          price: parsePriceToNumber(formData.price),
+          km: parseKmToNumber(formData.km),
+          color: formData.color || undefined,
+          fuelType: formData.fuelType || undefined,
+          description: formData.description || undefined,
+          featured: formData.featured,
+          status: formData.status,
+        })
+
+        if (!result.success) throw new Error(result.error)
+
+        toast({ title: "Veículo atualizado com sucesso!" })
+      } else {
+        await createVehicleAction({
+          make: formData.make,
+          model: formData.model,
+          year: parseInt(formData.year, 10) || currentYear,
+          price: parsePriceToNumber(formData.price),
+          km: parseKmToNumber(formData.km),
+          color: formData.color || undefined,
+          fuelType: formData.fuelType || undefined,
+          description: formData.description || undefined,
+          featured: formData.featured,
+          status: formData.status,
+          imageFiles: images.map((img) => img.file),
+        })
+
+        toast({ title: "Veículo cadastrado com sucesso!" })
+      }
+
+      router.push("/admin/estoque")
+      router.refresh()
     } catch (err) {
       toast({
-        title: "Erro ao cadastrar",
+        title: "Erro ao salvar",
         description: err instanceof Error ? err.message : "Tente novamente.",
         variant: "destructive",
       })
@@ -207,15 +211,6 @@ export function VehicleForm() {
       setIsPending(false)
     }
   }
-
-  const handleCancel = () => {
-    setFormData(INITIAL_FORM_DATA)
-    images.forEach((img) => URL.revokeObjectURL(img.preview))
-    setImages([])
-  }
-
-  const currentYear = new Date().getFullYear()
-  const years = Array.from({ length: 30 }, (_, i) => currentYear - i)
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
@@ -225,44 +220,47 @@ export function VehicleForm() {
           <Car className="h-5 w-5 text-primary-foreground" />
         </div>
         <div>
-          <h1 className="text-xl font-semibold text-foreground">Novo Veículo</h1>
+          <h1 className="text-xl font-semibold">
+            {isEditing ? "Editar Veículo" : "Novo Veículo"}
+          </h1>
           <p className="text-sm text-muted-foreground">
-            Preencha as informações do veículo para adicionar ao estoque
+            {isEditing
+              ? "Atualize as informações do veículo"
+              : "Preencha as informações para adicionar ao estoque"}
           </p>
         </div>
       </div>
 
-      {/* Two Column Layout */}
       <div className="grid gap-8 lg:grid-cols-2">
-        {/* Column 1: Image Upload */}
-        <div className="space-y-4">
-          <div>
-            <h2 className="text-sm font-medium text-foreground">Fotos do Veículo</h2>
-            <p className="text-xs text-muted-foreground mt-1">
-              A primeira imagem será usada como capa
-            </p>
+        {/* Coluna 1: Fotos (só no cadastro) */}
+        {!isEditing && (
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-sm font-medium">Fotos do Veículo</h2>
+              <p className="text-xs text-muted-foreground mt-1">
+                A primeira imagem será usada como capa
+              </p>
+            </div>
+            <ImageUploader
+              images={images}
+              onImagesChange={setImages}
+              maxImages={10}
+            />
           </div>
-          <ImageUploader
-            images={images}
-            onImagesChange={setImages}
-            maxImages={10}
-          />
-        </div>
+        )}
 
-        {/* Column 2: Form Fields */}
-        <div className="space-y-6">
+        {/* Coluna 2: Campos */}
+        <div className={`space-y-6 ${isEditing ? "lg:col-span-2" : ""}`}>
           <FieldGroup>
-            {/* Make & Model Row */}
+            {/* Marca e Modelo */}
             <div className="grid gap-4 sm:grid-cols-2">
               <Field>
-                <FieldLabel htmlFor="make">Marca</FieldLabel>
+                <FieldLabel htmlFor="make">Marca *</FieldLabel>
                 <Select
                   value={formData.make}
-                  onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, make: value }))
-                  }
+                  onValueChange={(v) => setFormData((p) => ({ ...p, make: v }))}
                 >
-                  <SelectTrigger id="make" className="w-full">
+                  <SelectTrigger id="make">
                     <SelectValue placeholder="Selecione a marca" />
                   </SelectTrigger>
                   <SelectContent>
@@ -276,29 +274,26 @@ export function VehicleForm() {
               </Field>
 
               <Field>
-                <FieldLabel htmlFor="model">Modelo</FieldLabel>
+                <FieldLabel htmlFor="model">Modelo *</FieldLabel>
                 <Input
                   id="model"
-                  placeholder="Ex: X5, Classe C, 911..."
+                  placeholder="Ex: Onix, Gol, Corolla..."
                   value={formData.model}
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, model: e.target.value }))
-                  }
+                  onChange={(e) => setFormData((p) => ({ ...p, model: e.target.value }))}
+                  required
                 />
               </Field>
             </div>
 
-            {/* Year & KM Row */}
+            {/* Ano e KM */}
             <div className="grid gap-4 sm:grid-cols-2">
               <Field>
-                <FieldLabel htmlFor="year">Ano</FieldLabel>
+                <FieldLabel htmlFor="year">Ano *</FieldLabel>
                 <Select
                   value={formData.year}
-                  onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, year: value }))
-                  }
+                  onValueChange={(v) => setFormData((p) => ({ ...p, year: v }))}
                 >
-                  <SelectTrigger id="year" className="w-full">
+                  <SelectTrigger id="year">
                     <SelectValue placeholder="Selecione o ano" />
                   </SelectTrigger>
                   <SelectContent>
@@ -312,39 +307,43 @@ export function VehicleForm() {
               </Field>
 
               <Field>
-                <FieldLabel htmlFor="km">Quilometragem</FieldLabel>
+                <FieldLabel htmlFor="km">Quilometragem *</FieldLabel>
                 <Input
                   id="km"
                   placeholder="0"
                   value={formData.km}
-                  onChange={handleKmChange}
+                  onChange={(e) =>
+                    setFormData((p) => ({ ...p, km: formatKm(e.target.value) }))
+                  }
+                  required
                 />
               </Field>
             </div>
 
-            {/* Price */}
+            {/* Preço */}
             <Field>
-              <FieldLabel htmlFor="price">Preço</FieldLabel>
+              <FieldLabel htmlFor="price">Preço *</FieldLabel>
               <Input
                 id="price"
                 placeholder="R$ 0,00"
                 value={formData.price}
-                onChange={handlePriceChange}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, price: formatCurrency(e.target.value) }))
+                }
                 className="text-lg font-semibold"
+                required
               />
             </Field>
 
-            {/* Color & Fuel Type Row */}
+            {/* Cor e Combustível */}
             <div className="grid gap-4 sm:grid-cols-2">
               <Field>
                 <FieldLabel htmlFor="color">Cor</FieldLabel>
                 <Select
                   value={formData.color}
-                  onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, color: value }))
-                  }
+                  onValueChange={(v) => setFormData((p) => ({ ...p, color: v }))}
                 >
-                  <SelectTrigger id="color" className="w-full">
+                  <SelectTrigger id="color">
                     <SelectValue placeholder="Selecione a cor" />
                   </SelectTrigger>
                   <SelectContent>
@@ -361,11 +360,9 @@ export function VehicleForm() {
                 <FieldLabel htmlFor="fuel">Combustível</FieldLabel>
                 <Select
                   value={formData.fuelType}
-                  onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, fuelType: value }))
-                  }
+                  onValueChange={(v) => setFormData((p) => ({ ...p, fuelType: v }))}
                 >
-                  <SelectTrigger id="fuel" className="w-full">
+                  <SelectTrigger id="fuel">
                     <SelectValue placeholder="Selecione o tipo" />
                   </SelectTrigger>
                   <SelectContent>
@@ -378,31 +375,75 @@ export function VehicleForm() {
                 </Select>
               </Field>
             </div>
+
+            {/* Status */}
+            <Field>
+              <FieldLabel htmlFor="status">Status</FieldLabel>
+              <Select
+                value={formData.status}
+                onValueChange={(v) =>
+                  setFormData((p) => ({
+                    ...p,
+                    status: v as "AVAILABLE" | "RESERVED" | "SOLD",
+                  }))
+                }
+              >
+                <SelectTrigger id="status">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="AVAILABLE">Disponível</SelectItem>
+                  <SelectItem value="RESERVED">Reservado</SelectItem>
+                  <SelectItem value="SOLD">Vendido</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
+
+            {/* Destaque */}
+            <div className="flex items-center justify-between rounded-lg border p-4">
+              <div>
+                <p className="text-sm font-medium">Veículo em Destaque</p>
+                <p className="text-xs text-muted-foreground">
+                  Aparece na seção de destaques do showroom
+                </p>
+              </div>
+              <Switch
+                checked={formData.featured}
+                onCheckedChange={(v) => setFormData((p) => ({ ...p, featured: v }))}
+              />
+            </div>
           </FieldGroup>
 
-          {/* Highlights Section */}
+          {/* Destaques/Opcionais */}
           <FieldSet>
-            <FieldLegend variant="label">Destaques</FieldLegend>
+            <FieldLegend variant="label">Opcionais</FieldLegend>
             <p className="text-xs text-muted-foreground -mt-2 mb-3">
-              Selecione os opcionais e características do veículo
+              Selecione os opcionais do veículo
             </p>
             <div className="grid grid-cols-2 gap-3">
               {HIGHLIGHTS.map((highlight) => (
                 <label
                   key={highlight.id}
-                  className="flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-card p-3 transition-colors hover:bg-muted/50 has-[:checked]:border-primary has-[:checked]:bg-primary/5"
+                  className="flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50 has-[:checked]:border-primary has-[:checked]:bg-primary/5"
                 >
                   <Checkbox
                     checked={formData.highlights.includes(highlight.id)}
-                    onCheckedChange={() => handleHighlightToggle(highlight.id)}
+                    onCheckedChange={() =>
+                      setFormData((p) => ({
+                        ...p,
+                        highlights: p.highlights.includes(highlight.id)
+                          ? p.highlights.filter((id) => id !== highlight.id)
+                          : [...p.highlights, highlight.id],
+                      }))
+                    }
                   />
-                  <span className="text-sm text-foreground">{highlight.label}</span>
+                  <span className="text-sm">{highlight.label}</span>
                 </label>
               ))}
             </div>
           </FieldSet>
 
-          {/* Description */}
+          {/* Descrição */}
           <Field>
             <FieldLabel htmlFor="description">Descrição Adicional</FieldLabel>
             <Textarea
@@ -410,7 +451,7 @@ export function VehicleForm() {
               placeholder="Descreva detalhes adicionais, histórico do veículo, estado de conservação..."
               value={formData.description}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, description: e.target.value }))
+                setFormData((p) => ({ ...p, description: e.target.value }))
               }
               className="min-h-[120px] resize-none"
             />
@@ -418,12 +459,12 @@ export function VehicleForm() {
         </div>
       </div>
 
-      {/* Action Buttons */}
+      {/* Botões */}
       <div className="flex items-center justify-end gap-3 border-t pt-6">
         <Button
           type="button"
           variant="outline"
-          onClick={handleCancel}
+          onClick={() => router.push("/admin/estoque")}
           className="gap-2"
         >
           <X className="h-4 w-4" />
@@ -433,12 +474,12 @@ export function VehicleForm() {
           {isPending ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              Carregando...
+              Salvando...
             </>
           ) : (
             <>
               <Save className="h-4 w-4" />
-              Salvar Veículo
+              {isEditing ? "Salvar Alterações" : "Cadastrar Veículo"}
             </>
           )}
         </Button>
