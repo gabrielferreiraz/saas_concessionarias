@@ -1,34 +1,30 @@
-"use server";
+"use server"
 
-import { prisma } from "@/src/lib/prisma";
-import { resolveCurrentStore } from "@/src/lib/tenant";
+import { prisma } from "@/src/lib/prisma"
+import { resolveCurrentStore } from "@/src/lib/tenant"
 
 export async function trackLeadClick(vehicleId?: string) {
   try {
-    let storeId: string | null = null;
+    const store = await resolveCurrentStore()
+    if (!store) return
 
+    // Se veio vehicleId, valida que o veículo pertence à loja atual
+    let validatedVehicleId: string | null = null
     if (vehicleId) {
       const vehicle = await prisma.vehicle.findUnique({
-        where: { id: vehicleId },
-        select: { storeId: true },
-      });
-      storeId = vehicle?.storeId ?? null;
+        where: { id: vehicleId, storeId: store.id },
+        select: { id: true },
+      })
+      validatedVehicleId = vehicle?.id ?? null
     }
-
-    if (!storeId) {
-      const store = await resolveCurrentStore();
-      storeId = store?.id ?? null;
-    }
-
-    if (!storeId) return;
 
     await prisma.leadEvent.create({
       data: {
-        storeId,
-        vehicleId: vehicleId ?? null,
+        storeId: store.id,
+        vehicleId: validatedVehicleId,
         type: "WHATSAPP_CLICK",
       },
-    });
+    })
   } catch {
     // Silencioso: não atrapalha a experiência do usuário
   }

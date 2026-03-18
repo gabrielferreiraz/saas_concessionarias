@@ -129,6 +129,7 @@ exports.Prisma.StoreScalarFieldEnum = {
   logoUrl: 'logoUrl',
   primaryColor: 'primaryColor',
   whatsapp: 'whatsapp',
+  status: 'status',
   createdAt: 'createdAt'
 };
 
@@ -186,6 +187,12 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.StoreStatus = exports.$Enums.StoreStatus = {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.Status = exports.$Enums.Status = {
   AVAILABLE: 'AVAILABLE',
   RESERVED: 'RESERVED',

@@ -10,7 +10,14 @@ export default withAuth(
       signIn: "/login",
     },
     callbacks: {
-      authorized: ({ token }) => !!token,
+      authorized: ({ token, req }) => {
+        if (!token) return false
+        // Garante que usuário admin sempre tem storeId no token
+        if (req.nextUrl.pathname.startsWith("/admin")) {
+          return !!token.storeId
+        }
+        return true
+      },
     },
   }
 )

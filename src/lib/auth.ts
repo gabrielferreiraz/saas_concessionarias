@@ -23,8 +23,10 @@ declare module "next-auth/jwt" {
   }
 }
 
+const isDev = process.env.NODE_ENV === "development"
+
 export const authOptions: NextAuthOptions = {
-  debug: true,
+  debug: isDev,
   trustHost: true,
   providers: [
     CredentialsProvider({
@@ -37,114 +39,64 @@ export const authOptions: NextAuthOptions = {
         const email = credentials?.email?.toLowerCase().trim()
         const password = credentials?.password
 
-        if (!email || !password) {
-          console.error("[AUTH] Credenciais ausentes.")
-          return null
-        }
+        if (!email || !password) return null
 
-        // Extrai host e subdomínio para vincular o login à loja correta
         const rawHost =
           (req?.headers as Record<string, string> | undefined)?.host ?? ""
         const rootDomain =
           process.env.NEXT_PUBLIC_ROOT_DOMAIN?.toLowerCase().trim() ?? ""
 
-        console.log("--- [AUTH DEBUG] LOGIN CREDENTIALS ---")
-        console.log("Email recebido:", email)
-        console.log("Host bruto recebido:", rawHost)
-        console.log("Root Domain configurado:", rootDomain)
-
-        const currentHost = (rawHost || "").replace(/:.*/, "").toLowerCase()
-        console.log("Host normalizado (sem porta):", currentHost)
+        const currentHost = rawHost.replace(/:.*/, "").toLowerCase()
 
         let tenantStoreId: string | null = null
 
         try {
           if (currentHost) {
-            // Tenta customDomain primeiro
             const byCustomDomain = await prisma.store.findUnique({
-              where: { customDomain: currentHost },
+              where: { customDomain: currentHost, status: "ACTIVE" },
             })
             if (byCustomDomain) {
-              console.log(
-                "[AUTH DEBUG] Store encontrada por customDomain:",
-                byCustomDomain.id
-              )
               tenantStoreId = byCustomDomain.id
             } else if (rootDomain && currentHost.endsWith(`.${rootDomain}`)) {
               let subdomain = currentHost.replace(`.${rootDomain}`, "")
               if (subdomain === "www") subdomain = ""
-              console.log("Subdomínio extraído final (auth):", subdomain)
               if (subdomain) {
                 const bySub = await prisma.store.findUnique({
-                  where: { subdomain },
+                  where: { subdomain, status: "ACTIVE" },
                 })
-                if (bySub) {
-                  console.log(
-                    "[AUTH DEBUG] Store encontrada por subdomain:",
-                    bySub.id
-                  )
-                  tenantStoreId = bySub.id
-                }
+                if (bySub) tenantStoreId = bySub.id
               }
             }
           }
         } catch (err) {
-          console.error("[AUTH ERROR] Falha ao resolver tenant no authorize:", err)
+          console.error("[AUTH] Falha ao resolver tenant:", err)
           return null
         }
 
-        if (!tenantStoreId) {
-          console.error(
-            "[AUTH ERROR] Nenhuma store correspondente ao host ao tentar login."
-          )
-          console.log("--- [AUTH DEBUG] FIM (sem tenant) ---")
-          return null
-        }
+        if (!tenantStoreId) return null
 
         let user = null
         try {
           user = await prisma.user.findFirst({
-            where: {
-              email,
-              storeId: tenantStoreId,
-            },
+            where: { email, storeId: tenantStoreId },
             include: { store: true },
           })
         } catch (err) {
-          console.error("[AUTH ERROR] Falha ao buscar usuário:", err)
+          console.error("[AUTH] Falha ao buscar usuário:", err)
           return null
         }
 
-        console.log("[AUTH DEBUG] Usuário encontrado no banco?:", !!user)
-
-        if (!user) {
-          console.error(
-            "[AUTH ERROR] Nenhum usuário encontrado para este e-mail/tenant."
-          )
-          console.log("--- [AUTH DEBUG] FIM (user not found) ---")
-          return null
-        }
+        if (!user) return null
 
         let isValid = false
         try {
           isValid = await compare(password, user.password)
         } catch (err) {
-          console.error("[AUTH ERROR] Falha ao comparar hash de senha:", err)
+          console.error("[AUTH] Falha ao comparar senha:", err)
           return null
         }
 
-        console.log("[AUTH DEBUG] Resultado comparação bcrypt:", isValid)
-
-        if (!isValid) {
-          console.error(
-            "[AUTH ERROR] Senha inválida para o e-mail/tenant informado."
-          )
-          console.log("--- [AUTH DEBUG] FIM (invalid password) ---")
-          return null
-        }
-
-        console.log("[AUTH DEBUG] Login autorizado para usuário:", user.id)
-        console.log("--- [AUTH DEBUG] FIM (success) ---")
+        if (!isValid) return null
 
         return {
           id: user.id,
@@ -158,7 +110,7 @@ export const authOptions: NextAuthOptions = {
   ],
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 30 * 24 * 60 * 60,
   },
   callbacks: {
     async jwt({ token, user }) {

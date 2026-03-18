@@ -51,11 +51,24 @@ export namespace $Enums {
 
 export type Status = (typeof Status)[keyof typeof Status]
 
+
+export const StoreStatus: {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  CANCELLED: 'CANCELLED'
+};
+
+export type StoreStatus = (typeof StoreStatus)[keyof typeof StoreStatus]
+
 }
 
 export type Status = $Enums.Status
 
 export const Status: typeof $Enums.Status
+
+export type StoreStatus = $Enums.StoreStatus
+
+export const StoreStatus: typeof $Enums.StoreStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -1355,6 +1368,7 @@ export namespace Prisma {
     logoUrl: string | null
     primaryColor: string | null
     whatsapp: string | null
+    status: $Enums.StoreStatus | null
     createdAt: Date | null
   }
 
@@ -1367,6 +1381,7 @@ export namespace Prisma {
     logoUrl: string | null
     primaryColor: string | null
     whatsapp: string | null
+    status: $Enums.StoreStatus | null
     createdAt: Date | null
   }
 
@@ -1379,6 +1394,7 @@ export namespace Prisma {
     logoUrl: number
     primaryColor: number
     whatsapp: number
+    status: number
     createdAt: number
     _all: number
   }
@@ -1393,6 +1409,7 @@ export namespace Prisma {
     logoUrl?: true
     primaryColor?: true
     whatsapp?: true
+    status?: true
     createdAt?: true
   }
 
@@ -1405,6 +1422,7 @@ export namespace Prisma {
     logoUrl?: true
     primaryColor?: true
     whatsapp?: true
+    status?: true
     createdAt?: true
   }
 
@@ -1417,6 +1435,7 @@ export namespace Prisma {
     logoUrl?: true
     primaryColor?: true
     whatsapp?: true
+    status?: true
     createdAt?: true
     _all?: true
   }
@@ -1502,6 +1521,7 @@ export namespace Prisma {
     logoUrl: string | null
     primaryColor: string
     whatsapp: string
+    status: $Enums.StoreStatus
     createdAt: Date
     _count: StoreCountAggregateOutputType | null
     _min: StoreMinAggregateOutputType | null
@@ -1531,6 +1551,7 @@ export namespace Prisma {
     logoUrl?: boolean
     primaryColor?: boolean
     whatsapp?: boolean
+    status?: boolean
     createdAt?: boolean
     vehicles?: boolean | Store$vehiclesArgs<ExtArgs>
     users?: boolean | Store$usersArgs<ExtArgs>
@@ -1547,6 +1568,7 @@ export namespace Prisma {
     logoUrl?: boolean
     primaryColor?: boolean
     whatsapp?: boolean
+    status?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["store"]>
 
@@ -1559,6 +1581,7 @@ export namespace Prisma {
     logoUrl?: boolean
     primaryColor?: boolean
     whatsapp?: boolean
+    status?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["store"]>
 
@@ -1571,10 +1594,11 @@ export namespace Prisma {
     logoUrl?: boolean
     primaryColor?: boolean
     whatsapp?: boolean
+    status?: boolean
     createdAt?: boolean
   }
 
-  export type StoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "subdomain" | "customDomain" | "logoUrl" | "primaryColor" | "whatsapp" | "createdAt", ExtArgs["result"]["store"]>
+  export type StoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "subdomain" | "customDomain" | "logoUrl" | "primaryColor" | "whatsapp" | "status" | "createdAt", ExtArgs["result"]["store"]>
   export type StoreInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     vehicles?: boolean | Store$vehiclesArgs<ExtArgs>
     users?: boolean | Store$usersArgs<ExtArgs>
@@ -1606,6 +1630,7 @@ export namespace Prisma {
       logoUrl: string | null
       primaryColor: string
       whatsapp: string
+      status: $Enums.StoreStatus
       createdAt: Date
     }, ExtArgs["result"]["store"]>
     composites: {}
@@ -2041,6 +2066,7 @@ export namespace Prisma {
     readonly logoUrl: FieldRef<"Store", 'String'>
     readonly primaryColor: FieldRef<"Store", 'String'>
     readonly whatsapp: FieldRef<"Store", 'String'>
+    readonly status: FieldRef<"Store", 'StoreStatus'>
     readonly createdAt: FieldRef<"Store", 'DateTime'>
   }
     
@@ -7084,6 +7110,7 @@ export namespace Prisma {
     logoUrl: 'logoUrl',
     primaryColor: 'primaryColor',
     whatsapp: 'whatsapp',
+    status: 'status',
     createdAt: 'createdAt'
   };
 
@@ -7186,6 +7213,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'StoreStatus'
+   */
+  export type EnumStoreStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StoreStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'StoreStatus[]'
+   */
+  export type ListEnumStoreStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StoreStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -7263,6 +7304,7 @@ export namespace Prisma {
     logoUrl?: StringNullableFilter<"Store"> | string | null
     primaryColor?: StringFilter<"Store"> | string
     whatsapp?: StringFilter<"Store"> | string
+    status?: EnumStoreStatusFilter<"Store"> | $Enums.StoreStatus
     createdAt?: DateTimeFilter<"Store"> | Date | string
     vehicles?: VehicleListRelationFilter
     users?: UserListRelationFilter
@@ -7278,6 +7320,7 @@ export namespace Prisma {
     logoUrl?: SortOrderInput | SortOrder
     primaryColor?: SortOrder
     whatsapp?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     vehicles?: VehicleOrderByRelationAggregateInput
     users?: UserOrderByRelationAggregateInput
@@ -7296,6 +7339,7 @@ export namespace Prisma {
     logoUrl?: StringNullableFilter<"Store"> | string | null
     primaryColor?: StringFilter<"Store"> | string
     whatsapp?: StringFilter<"Store"> | string
+    status?: EnumStoreStatusFilter<"Store"> | $Enums.StoreStatus
     createdAt?: DateTimeFilter<"Store"> | Date | string
     vehicles?: VehicleListRelationFilter
     users?: UserListRelationFilter
@@ -7311,6 +7355,7 @@ export namespace Prisma {
     logoUrl?: SortOrderInput | SortOrder
     primaryColor?: SortOrder
     whatsapp?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     _count?: StoreCountOrderByAggregateInput
     _max?: StoreMaxOrderByAggregateInput
@@ -7329,6 +7374,7 @@ export namespace Prisma {
     logoUrl?: StringNullableWithAggregatesFilter<"Store"> | string | null
     primaryColor?: StringWithAggregatesFilter<"Store"> | string
     whatsapp?: StringWithAggregatesFilter<"Store"> | string
+    status?: EnumStoreStatusWithAggregatesFilter<"Store"> | $Enums.StoreStatus
     createdAt?: DateTimeWithAggregatesFilter<"Store"> | Date | string
   }
 
@@ -7614,6 +7660,7 @@ export namespace Prisma {
     logoUrl?: string | null
     primaryColor?: string
     whatsapp: string
+    status?: $Enums.StoreStatus
     createdAt?: Date | string
     vehicles?: VehicleCreateNestedManyWithoutStoreInput
     users?: UserCreateNestedManyWithoutStoreInput
@@ -7629,6 +7676,7 @@ export namespace Prisma {
     logoUrl?: string | null
     primaryColor?: string
     whatsapp: string
+    status?: $Enums.StoreStatus
     createdAt?: Date | string
     vehicles?: VehicleUncheckedCreateNestedManyWithoutStoreInput
     users?: UserUncheckedCreateNestedManyWithoutStoreInput
@@ -7644,6 +7692,7 @@ export namespace Prisma {
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: StringFieldUpdateOperationsInput | string
     whatsapp?: StringFieldUpdateOperationsInput | string
+    status?: EnumStoreStatusFieldUpdateOperationsInput | $Enums.StoreStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     vehicles?: VehicleUpdateManyWithoutStoreNestedInput
     users?: UserUpdateManyWithoutStoreNestedInput
@@ -7659,6 +7708,7 @@ export namespace Prisma {
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: StringFieldUpdateOperationsInput | string
     whatsapp?: StringFieldUpdateOperationsInput | string
+    status?: EnumStoreStatusFieldUpdateOperationsInput | $Enums.StoreStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     vehicles?: VehicleUncheckedUpdateManyWithoutStoreNestedInput
     users?: UserUncheckedUpdateManyWithoutStoreNestedInput
@@ -7674,6 +7724,7 @@ export namespace Prisma {
     logoUrl?: string | null
     primaryColor?: string
     whatsapp: string
+    status?: $Enums.StoreStatus
     createdAt?: Date | string
   }
 
@@ -7686,6 +7737,7 @@ export namespace Prisma {
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: StringFieldUpdateOperationsInput | string
     whatsapp?: StringFieldUpdateOperationsInput | string
+    status?: EnumStoreStatusFieldUpdateOperationsInput | $Enums.StoreStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -7698,6 +7750,7 @@ export namespace Prisma {
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: StringFieldUpdateOperationsInput | string
     whatsapp?: StringFieldUpdateOperationsInput | string
+    status?: EnumStoreStatusFieldUpdateOperationsInput | $Enums.StoreStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -8014,6 +8067,13 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type EnumStoreStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.StoreStatus | EnumStoreStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.StoreStatus[] | ListEnumStoreStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StoreStatus[] | ListEnumStoreStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumStoreStatusFilter<$PrismaModel> | $Enums.StoreStatus
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -8069,6 +8129,7 @@ export namespace Prisma {
     logoUrl?: SortOrder
     primaryColor?: SortOrder
     whatsapp?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -8081,6 +8142,7 @@ export namespace Prisma {
     logoUrl?: SortOrder
     primaryColor?: SortOrder
     whatsapp?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -8093,6 +8155,7 @@ export namespace Prisma {
     logoUrl?: SortOrder
     primaryColor?: SortOrder
     whatsapp?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -8130,6 +8193,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type EnumStoreStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StoreStatus | EnumStoreStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.StoreStatus[] | ListEnumStoreStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StoreStatus[] | ListEnumStoreStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumStoreStatusWithAggregatesFilter<$PrismaModel> | $Enums.StoreStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumStoreStatusFilter<$PrismaModel>
+    _max?: NestedEnumStoreStatusFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -8450,6 +8523,10 @@ export namespace Prisma {
     set?: string | null
   }
 
+  export type EnumStoreStatusFieldUpdateOperationsInput = {
+    set?: $Enums.StoreStatus
+  }
+
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
   }
@@ -8748,6 +8825,13 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedEnumStoreStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.StoreStatus | EnumStoreStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.StoreStatus[] | ListEnumStoreStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StoreStatus[] | ListEnumStoreStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumStoreStatusFilter<$PrismaModel> | $Enums.StoreStatus
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -8813,6 +8897,16 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedEnumStoreStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StoreStatus | EnumStoreStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.StoreStatus[] | ListEnumStoreStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StoreStatus[] | ListEnumStoreStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumStoreStatusWithAggregatesFilter<$PrismaModel> | $Enums.StoreStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumStoreStatusFilter<$PrismaModel>
+    _max?: NestedEnumStoreStatusFilter<$PrismaModel>
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -9092,6 +9186,7 @@ export namespace Prisma {
     logoUrl?: string | null
     primaryColor?: string
     whatsapp: string
+    status?: $Enums.StoreStatus
     createdAt?: Date | string
     vehicles?: VehicleCreateNestedManyWithoutStoreInput
     leadEvents?: LeadEventCreateNestedManyWithoutStoreInput
@@ -9106,6 +9201,7 @@ export namespace Prisma {
     logoUrl?: string | null
     primaryColor?: string
     whatsapp: string
+    status?: $Enums.StoreStatus
     createdAt?: Date | string
     vehicles?: VehicleUncheckedCreateNestedManyWithoutStoreInput
     leadEvents?: LeadEventUncheckedCreateNestedManyWithoutStoreInput
@@ -9136,6 +9232,7 @@ export namespace Prisma {
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: StringFieldUpdateOperationsInput | string
     whatsapp?: StringFieldUpdateOperationsInput | string
+    status?: EnumStoreStatusFieldUpdateOperationsInput | $Enums.StoreStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     vehicles?: VehicleUpdateManyWithoutStoreNestedInput
     leadEvents?: LeadEventUpdateManyWithoutStoreNestedInput
@@ -9150,6 +9247,7 @@ export namespace Prisma {
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: StringFieldUpdateOperationsInput | string
     whatsapp?: StringFieldUpdateOperationsInput | string
+    status?: EnumStoreStatusFieldUpdateOperationsInput | $Enums.StoreStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     vehicles?: VehicleUncheckedUpdateManyWithoutStoreNestedInput
     leadEvents?: LeadEventUncheckedUpdateManyWithoutStoreNestedInput
@@ -9164,6 +9262,7 @@ export namespace Prisma {
     logoUrl?: string | null
     primaryColor?: string
     whatsapp: string
+    status?: $Enums.StoreStatus
     createdAt?: Date | string
     users?: UserCreateNestedManyWithoutStoreInput
     leadEvents?: LeadEventCreateNestedManyWithoutStoreInput
@@ -9178,6 +9277,7 @@ export namespace Prisma {
     logoUrl?: string | null
     primaryColor?: string
     whatsapp: string
+    status?: $Enums.StoreStatus
     createdAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutStoreInput
     leadEvents?: LeadEventUncheckedCreateNestedManyWithoutStoreInput
@@ -9256,6 +9356,7 @@ export namespace Prisma {
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: StringFieldUpdateOperationsInput | string
     whatsapp?: StringFieldUpdateOperationsInput | string
+    status?: EnumStoreStatusFieldUpdateOperationsInput | $Enums.StoreStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutStoreNestedInput
     leadEvents?: LeadEventUpdateManyWithoutStoreNestedInput
@@ -9270,6 +9371,7 @@ export namespace Prisma {
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: StringFieldUpdateOperationsInput | string
     whatsapp?: StringFieldUpdateOperationsInput | string
+    status?: EnumStoreStatusFieldUpdateOperationsInput | $Enums.StoreStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutStoreNestedInput
     leadEvents?: LeadEventUncheckedUpdateManyWithoutStoreNestedInput
@@ -9362,6 +9464,7 @@ export namespace Prisma {
     logoUrl?: string | null
     primaryColor?: string
     whatsapp: string
+    status?: $Enums.StoreStatus
     createdAt?: Date | string
     vehicles?: VehicleCreateNestedManyWithoutStoreInput
     users?: UserCreateNestedManyWithoutStoreInput
@@ -9376,6 +9479,7 @@ export namespace Prisma {
     logoUrl?: string | null
     primaryColor?: string
     whatsapp: string
+    status?: $Enums.StoreStatus
     createdAt?: Date | string
     vehicles?: VehicleUncheckedCreateNestedManyWithoutStoreInput
     users?: UserUncheckedCreateNestedManyWithoutStoreInput
@@ -9447,6 +9551,7 @@ export namespace Prisma {
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: StringFieldUpdateOperationsInput | string
     whatsapp?: StringFieldUpdateOperationsInput | string
+    status?: EnumStoreStatusFieldUpdateOperationsInput | $Enums.StoreStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     vehicles?: VehicleUpdateManyWithoutStoreNestedInput
     users?: UserUpdateManyWithoutStoreNestedInput
@@ -9461,6 +9566,7 @@ export namespace Prisma {
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     primaryColor?: StringFieldUpdateOperationsInput | string
     whatsapp?: StringFieldUpdateOperationsInput | string
+    status?: EnumStoreStatusFieldUpdateOperationsInput | $Enums.StoreStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     vehicles?: VehicleUncheckedUpdateManyWithoutStoreNestedInput
     users?: UserUncheckedUpdateManyWithoutStoreNestedInput

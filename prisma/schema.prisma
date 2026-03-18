@@ -23,6 +23,7 @@ model Store {
   logoUrl      String?
   primaryColor String      @default("#000000")
   whatsapp     String
+  status       StoreStatus @default(ACTIVE)
   vehicles     Vehicle[]
   users        User[]
   leadEvents   LeadEvent[]
@@ -84,4 +85,10 @@ enum Status {
   AVAILABLE
   RESERVED
   SOLD
+}
+
+enum StoreStatus {
+  ACTIVE
+  SUSPENDED
+  CANCELLED
 }
