@@ -1,9 +1,18 @@
 import { prisma } from "@/src/lib/prisma"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { Store, ExternalLink } from "lucide-react"
+import { Store, ExternalLink, Eye } from "lucide-react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { StoreStatusButton } from "@/components/super-admin/store-status-button"
 
 const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "autosstock.uk"
+
+const STATUS_CONFIG = {
+  ACTIVE: { label: "Ativa", variant: "default" as const },
+  SUSPENDED: { label: "Suspensa", variant: "secondary" as const },
+  CANCELLED: { label: "Cancelada", variant: "destructive" as const },
+}
 
 export default async function SuperAdminLojasPage() {
   const stores = await prisma.store.findMany({
@@ -29,44 +38,56 @@ export default async function SuperAdminLojasPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {stores.map((store) => (
-            <Card key={store.id}>
-              <CardContent className="p-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-3">
-                      <h3 className="font-semibold">{store.name}</h3>
-                      <Badge
-                        variant={store.status === "ACTIVE" ? "default" : "destructive"}
-                      >
-                        {store.status === "ACTIVE" ? "Ativa" : store.status === "SUSPENDED" ? "Suspensa" : "Cancelada"}
-                      </Badge>
+          {stores.map((store) => {
+            const cfg = STATUS_CONFIG[store.status]
+            return (
+              <Card key={store.id}>
+                <CardContent className="p-6">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-3">
+                        <h3 className="font-semibold">{store.name}</h3>
+                        <Badge variant={cfg.variant}>{cfg.label}</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
+                          {store.subdomain}.{rootDomain}
+                        </code>
+                      </p>
+                      <div className="flex gap-4 text-sm text-muted-foreground">
+                        <span>{store._count.vehicles} veículos</span>
+                        <span>{store._count.users} usuários</span>
+                        <span>{store._count.leadEvents} leads</span>
+                      </div>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
-                        {store.subdomain}.{rootDomain}
-                      </code>
-                    </p>
-                    <div className="flex gap-4 text-sm text-muted-foreground">
-                      <span>{store._count.vehicles} veículos</span>
-                      <span>{store._count.users} usuários</span>
-                      <span>{store._count.leadEvents} leads</span>
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      <StoreStatusButton
+                        storeId={store.id}
+                        currentStatus={store.status}
+                      />
+                      <Button asChild variant="outline" size="sm" className="gap-2">
+                        <Link href={`/super-admin/lojas/${store.id}`}>
+                          <Eye className="size-4" />
+                          Detalhes
+                        </Link>
+                      </Button>
+                      
+                      <a
+                        href={`https://${store.subdomain}.${rootDomain}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
+                      >
+                        <ExternalLink className="size-4" />
+                        Ver showroom
+                      </a>
                     </div>
                   </div>
-                  
-                  <a
-                    href={`https://${store.subdomain}.${rootDomain}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    <ExternalLink className="size-4" />
-                    Ver showroom
-                  </a>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            )
+          })}
         </div>
       )}
     </div>
