@@ -2,40 +2,43 @@ import { headers } from "next/headers"
 import { unstable_cache } from "next/cache"
 import { prisma } from "./prisma"
 
-const getStoreByHost = unstable_cache(
-  async (currentHost: string) => {
-    const rootDomain =
-      process.env.NEXT_PUBLIC_ROOT_DOMAIN?.toLowerCase().trim() ?? ""
+// A chave do cache DEVE incluir o host para ser única por subdomínio
+function getStoreByHost(currentHost: string) {
+  return unstable_cache(
+    async () => {
+      const rootDomain =
+        process.env.NEXT_PUBLIC_ROOT_DOMAIN?.toLowerCase().trim() ?? ""
 
-    if (!currentHost) return null
-    if (rootDomain && currentHost === rootDomain) return null
+      if (!currentHost) return null
+      if (rootDomain && currentHost === rootDomain) return null
 
-    try {
-      const byCustomDomain = await prisma.store.findUnique({
-        where: { customDomain: currentHost, status: "ACTIVE" },
-      })
-      if (byCustomDomain) return byCustomDomain
-
-      let subdomain = ""
-      if (rootDomain && currentHost.endsWith(`.${rootDomain}`)) {
-        subdomain = currentHost.replace(`.${rootDomain}`, "")
-      }
-
-      if (subdomain && subdomain !== "www") {
-        const bySub = await prisma.store.findUnique({
-          where: { subdomain, status: "ACTIVE" },
+      try {
+        const byCustomDomain = await prisma.store.findUnique({
+          where: { customDomain: currentHost, status: "ACTIVE" },
         })
-        if (bySub) return bySub
-      }
-    } catch (error) {
-      console.error("[TENANT] Erro ao resolver store:", error)
-    }
+        if (byCustomDomain) return byCustomDomain
 
-    return null
-  },
-  ["tenant-by-host"],
-  { revalidate: 300 }
-)
+        let subdomain = ""
+        if (rootDomain && currentHost.endsWith(`.${rootDomain}`)) {
+          subdomain = currentHost.replace(`.${rootDomain}`, "")
+        }
+
+        if (subdomain && subdomain !== "www") {
+          const bySub = await prisma.store.findUnique({
+            where: { subdomain, status: "ACTIVE" },
+          })
+          if (bySub) return bySub
+        }
+      } catch (error) {
+        console.error("[TENANT] Erro ao resolver store:", error)
+      }
+
+      return null
+    },
+    [`tenant-by-host-${currentHost}`], // chave única por host
+    { revalidate: 300 }
+  )()
+}
 
 export async function resolveCurrentStore() {
   const headerList = await headers()
