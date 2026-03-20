@@ -66,6 +66,15 @@ export const StoreRequestStatus: {
 export type StoreRequestStatus = (typeof StoreRequestStatus)[keyof typeof StoreRequestStatus]
 
 
+export const AttendanceStatus: {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  DONE: 'DONE'
+};
+
+export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof AttendanceStatus]
+
+
 export const Status: {
   AVAILABLE: 'AVAILABLE',
   RESERVED: 'RESERVED',
@@ -92,6 +101,10 @@ export const UserRole: typeof $Enums.UserRole
 export type StoreRequestStatus = $Enums.StoreRequestStatus
 
 export const StoreRequestStatus: typeof $Enums.StoreRequestStatus
+
+export type AttendanceStatus = $Enums.AttendanceStatus
+
+export const AttendanceStatus: typeof $Enums.AttendanceStatus
 
 export type Status = $Enums.Status
 
@@ -6149,6 +6162,10 @@ export namespace Prisma {
     vehicleId: string | null
     storeId: string | null
     type: string | null
+    contactName: string | null
+    contactPhone: string | null
+    attendanceStatus: $Enums.AttendanceStatus | null
+    assignedTo: string | null
     createdAt: Date | null
   }
 
@@ -6157,6 +6174,10 @@ export namespace Prisma {
     vehicleId: string | null
     storeId: string | null
     type: string | null
+    contactName: string | null
+    contactPhone: string | null
+    attendanceStatus: $Enums.AttendanceStatus | null
+    assignedTo: string | null
     createdAt: Date | null
   }
 
@@ -6165,6 +6186,10 @@ export namespace Prisma {
     vehicleId: number
     storeId: number
     type: number
+    contactName: number
+    contactPhone: number
+    attendanceStatus: number
+    assignedTo: number
     createdAt: number
     _all: number
   }
@@ -6175,6 +6200,10 @@ export namespace Prisma {
     vehicleId?: true
     storeId?: true
     type?: true
+    contactName?: true
+    contactPhone?: true
+    attendanceStatus?: true
+    assignedTo?: true
     createdAt?: true
   }
 
@@ -6183,6 +6212,10 @@ export namespace Prisma {
     vehicleId?: true
     storeId?: true
     type?: true
+    contactName?: true
+    contactPhone?: true
+    attendanceStatus?: true
+    assignedTo?: true
     createdAt?: true
   }
 
@@ -6191,6 +6224,10 @@ export namespace Prisma {
     vehicleId?: true
     storeId?: true
     type?: true
+    contactName?: true
+    contactPhone?: true
+    attendanceStatus?: true
+    assignedTo?: true
     createdAt?: true
     _all?: true
   }
@@ -6272,6 +6309,10 @@ export namespace Prisma {
     vehicleId: string | null
     storeId: string
     type: string
+    contactName: string | null
+    contactPhone: string | null
+    attendanceStatus: $Enums.AttendanceStatus
+    assignedTo: string | null
     createdAt: Date
     _count: LeadEventCountAggregateOutputType | null
     _min: LeadEventMinAggregateOutputType | null
@@ -6297,6 +6338,10 @@ export namespace Prisma {
     vehicleId?: boolean
     storeId?: boolean
     type?: boolean
+    contactName?: boolean
+    contactPhone?: boolean
+    attendanceStatus?: boolean
+    assignedTo?: boolean
     createdAt?: boolean
     vehicle?: boolean | LeadEvent$vehicleArgs<ExtArgs>
     store?: boolean | StoreDefaultArgs<ExtArgs>
@@ -6307,6 +6352,10 @@ export namespace Prisma {
     vehicleId?: boolean
     storeId?: boolean
     type?: boolean
+    contactName?: boolean
+    contactPhone?: boolean
+    attendanceStatus?: boolean
+    assignedTo?: boolean
     createdAt?: boolean
     vehicle?: boolean | LeadEvent$vehicleArgs<ExtArgs>
     store?: boolean | StoreDefaultArgs<ExtArgs>
@@ -6317,6 +6366,10 @@ export namespace Prisma {
     vehicleId?: boolean
     storeId?: boolean
     type?: boolean
+    contactName?: boolean
+    contactPhone?: boolean
+    attendanceStatus?: boolean
+    assignedTo?: boolean
     createdAt?: boolean
     vehicle?: boolean | LeadEvent$vehicleArgs<ExtArgs>
     store?: boolean | StoreDefaultArgs<ExtArgs>
@@ -6327,10 +6380,14 @@ export namespace Prisma {
     vehicleId?: boolean
     storeId?: boolean
     type?: boolean
+    contactName?: boolean
+    contactPhone?: boolean
+    attendanceStatus?: boolean
+    assignedTo?: boolean
     createdAt?: boolean
   }
 
-  export type LeadEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "vehicleId" | "storeId" | "type" | "createdAt", ExtArgs["result"]["leadEvent"]>
+  export type LeadEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "vehicleId" | "storeId" | "type" | "contactName" | "contactPhone" | "attendanceStatus" | "assignedTo" | "createdAt", ExtArgs["result"]["leadEvent"]>
   export type LeadEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     vehicle?: boolean | LeadEvent$vehicleArgs<ExtArgs>
     store?: boolean | StoreDefaultArgs<ExtArgs>
@@ -6355,6 +6412,10 @@ export namespace Prisma {
       vehicleId: string | null
       storeId: string
       type: string
+      contactName: string | null
+      contactPhone: string | null
+      attendanceStatus: $Enums.AttendanceStatus
+      assignedTo: string | null
       createdAt: Date
     }, ExtArgs["result"]["leadEvent"]>
     composites: {}
@@ -6785,6 +6846,10 @@ export namespace Prisma {
     readonly vehicleId: FieldRef<"LeadEvent", 'String'>
     readonly storeId: FieldRef<"LeadEvent", 'String'>
     readonly type: FieldRef<"LeadEvent", 'String'>
+    readonly contactName: FieldRef<"LeadEvent", 'String'>
+    readonly contactPhone: FieldRef<"LeadEvent", 'String'>
+    readonly attendanceStatus: FieldRef<"LeadEvent", 'AttendanceStatus'>
+    readonly assignedTo: FieldRef<"LeadEvent", 'String'>
     readonly createdAt: FieldRef<"LeadEvent", 'DateTime'>
   }
     
@@ -8406,6 +8471,10 @@ export namespace Prisma {
     vehicleId: 'vehicleId',
     storeId: 'storeId',
     type: 'type',
+    contactName: 'contactName',
+    contactPhone: 'contactPhone',
+    attendanceStatus: 'attendanceStatus',
+    assignedTo: 'assignedTo',
     createdAt: 'createdAt'
   };
 
@@ -8568,6 +8637,20 @@ export namespace Prisma {
    * Reference to a field of type 'Status[]'
    */
   export type ListEnumStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Status[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AttendanceStatus'
+   */
+  export type EnumAttendanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttendanceStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'AttendanceStatus[]'
+   */
+  export type ListEnumAttendanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttendanceStatus[]'>
     
   /**
    * Deep Input Types
@@ -8923,6 +9006,10 @@ export namespace Prisma {
     vehicleId?: StringNullableFilter<"LeadEvent"> | string | null
     storeId?: StringFilter<"LeadEvent"> | string
     type?: StringFilter<"LeadEvent"> | string
+    contactName?: StringNullableFilter<"LeadEvent"> | string | null
+    contactPhone?: StringNullableFilter<"LeadEvent"> | string | null
+    attendanceStatus?: EnumAttendanceStatusFilter<"LeadEvent"> | $Enums.AttendanceStatus
+    assignedTo?: StringNullableFilter<"LeadEvent"> | string | null
     createdAt?: DateTimeFilter<"LeadEvent"> | Date | string
     vehicle?: XOR<VehicleNullableScalarRelationFilter, VehicleWhereInput> | null
     store?: XOR<StoreScalarRelationFilter, StoreWhereInput>
@@ -8933,6 +9020,10 @@ export namespace Prisma {
     vehicleId?: SortOrderInput | SortOrder
     storeId?: SortOrder
     type?: SortOrder
+    contactName?: SortOrderInput | SortOrder
+    contactPhone?: SortOrderInput | SortOrder
+    attendanceStatus?: SortOrder
+    assignedTo?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     vehicle?: VehicleOrderByWithRelationInput
     store?: StoreOrderByWithRelationInput
@@ -8946,6 +9037,10 @@ export namespace Prisma {
     vehicleId?: StringNullableFilter<"LeadEvent"> | string | null
     storeId?: StringFilter<"LeadEvent"> | string
     type?: StringFilter<"LeadEvent"> | string
+    contactName?: StringNullableFilter<"LeadEvent"> | string | null
+    contactPhone?: StringNullableFilter<"LeadEvent"> | string | null
+    attendanceStatus?: EnumAttendanceStatusFilter<"LeadEvent"> | $Enums.AttendanceStatus
+    assignedTo?: StringNullableFilter<"LeadEvent"> | string | null
     createdAt?: DateTimeFilter<"LeadEvent"> | Date | string
     vehicle?: XOR<VehicleNullableScalarRelationFilter, VehicleWhereInput> | null
     store?: XOR<StoreScalarRelationFilter, StoreWhereInput>
@@ -8956,6 +9051,10 @@ export namespace Prisma {
     vehicleId?: SortOrderInput | SortOrder
     storeId?: SortOrder
     type?: SortOrder
+    contactName?: SortOrderInput | SortOrder
+    contactPhone?: SortOrderInput | SortOrder
+    attendanceStatus?: SortOrder
+    assignedTo?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: LeadEventCountOrderByAggregateInput
     _max?: LeadEventMaxOrderByAggregateInput
@@ -8970,6 +9069,10 @@ export namespace Prisma {
     vehicleId?: StringNullableWithAggregatesFilter<"LeadEvent"> | string | null
     storeId?: StringWithAggregatesFilter<"LeadEvent"> | string
     type?: StringWithAggregatesFilter<"LeadEvent"> | string
+    contactName?: StringNullableWithAggregatesFilter<"LeadEvent"> | string | null
+    contactPhone?: StringNullableWithAggregatesFilter<"LeadEvent"> | string | null
+    attendanceStatus?: EnumAttendanceStatusWithAggregatesFilter<"LeadEvent"> | $Enums.AttendanceStatus
+    assignedTo?: StringNullableWithAggregatesFilter<"LeadEvent"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"LeadEvent"> | Date | string
   }
 
@@ -9429,6 +9532,10 @@ export namespace Prisma {
   export type LeadEventCreateInput = {
     id?: string
     type: string
+    contactName?: string | null
+    contactPhone?: string | null
+    attendanceStatus?: $Enums.AttendanceStatus
+    assignedTo?: string | null
     createdAt?: Date | string
     vehicle?: VehicleCreateNestedOneWithoutLeadEventsInput
     store: StoreCreateNestedOneWithoutLeadEventsInput
@@ -9439,12 +9546,20 @@ export namespace Prisma {
     vehicleId?: string | null
     storeId: string
     type: string
+    contactName?: string | null
+    contactPhone?: string | null
+    attendanceStatus?: $Enums.AttendanceStatus
+    assignedTo?: string | null
     createdAt?: Date | string
   }
 
   export type LeadEventUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceStatus?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
+    assignedTo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     vehicle?: VehicleUpdateOneWithoutLeadEventsNestedInput
     store?: StoreUpdateOneRequiredWithoutLeadEventsNestedInput
@@ -9455,6 +9570,10 @@ export namespace Prisma {
     vehicleId?: NullableStringFieldUpdateOperationsInput | string | null
     storeId?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceStatus?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
+    assignedTo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -9463,12 +9582,20 @@ export namespace Prisma {
     vehicleId?: string | null
     storeId: string
     type: string
+    contactName?: string | null
+    contactPhone?: string | null
+    attendanceStatus?: $Enums.AttendanceStatus
+    assignedTo?: string | null
     createdAt?: Date | string
   }
 
   export type LeadEventUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceStatus?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
+    assignedTo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -9477,6 +9604,10 @@ export namespace Prisma {
     vehicleId?: NullableStringFieldUpdateOperationsInput | string | null
     storeId?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceStatus?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
+    assignedTo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -9990,6 +10121,13 @@ export namespace Prisma {
     _max?: NestedEnumStatusFilter<$PrismaModel>
   }
 
+  export type EnumAttendanceStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttendanceStatus | EnumAttendanceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAttendanceStatusFilter<$PrismaModel> | $Enums.AttendanceStatus
+  }
+
   export type VehicleNullableScalarRelationFilter = {
     is?: VehicleWhereInput | null
     isNot?: VehicleWhereInput | null
@@ -10000,6 +10138,10 @@ export namespace Prisma {
     vehicleId?: SortOrder
     storeId?: SortOrder
     type?: SortOrder
+    contactName?: SortOrder
+    contactPhone?: SortOrder
+    attendanceStatus?: SortOrder
+    assignedTo?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -10008,6 +10150,10 @@ export namespace Prisma {
     vehicleId?: SortOrder
     storeId?: SortOrder
     type?: SortOrder
+    contactName?: SortOrder
+    contactPhone?: SortOrder
+    attendanceStatus?: SortOrder
+    assignedTo?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -10016,7 +10162,21 @@ export namespace Prisma {
     vehicleId?: SortOrder
     storeId?: SortOrder
     type?: SortOrder
+    contactName?: SortOrder
+    contactPhone?: SortOrder
+    attendanceStatus?: SortOrder
+    assignedTo?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type EnumAttendanceStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttendanceStatus | EnumAttendanceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAttendanceStatusWithAggregatesFilter<$PrismaModel> | $Enums.AttendanceStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAttendanceStatusFilter<$PrismaModel>
+    _max?: NestedEnumAttendanceStatusFilter<$PrismaModel>
   }
 
   export type VehicleScalarRelationFilter = {
@@ -10356,6 +10516,10 @@ export namespace Prisma {
     connect?: StoreWhereUniqueInput
   }
 
+  export type EnumAttendanceStatusFieldUpdateOperationsInput = {
+    set?: $Enums.AttendanceStatus
+  }
+
   export type VehicleUpdateOneWithoutLeadEventsNestedInput = {
     create?: XOR<VehicleCreateWithoutLeadEventsInput, VehicleUncheckedCreateWithoutLeadEventsInput>
     connectOrCreate?: VehicleCreateOrConnectWithoutLeadEventsInput
@@ -10621,6 +10785,23 @@ export namespace Prisma {
     _max?: NestedEnumStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumAttendanceStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttendanceStatus | EnumAttendanceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAttendanceStatusFilter<$PrismaModel> | $Enums.AttendanceStatus
+  }
+
+  export type NestedEnumAttendanceStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttendanceStatus | EnumAttendanceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AttendanceStatus[] | ListEnumAttendanceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAttendanceStatusWithAggregatesFilter<$PrismaModel> | $Enums.AttendanceStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAttendanceStatusFilter<$PrismaModel>
+    _max?: NestedEnumAttendanceStatusFilter<$PrismaModel>
+  }
+
   export type VehicleCreateWithoutStoreInput = {
     id?: string
     make: string
@@ -10698,6 +10879,10 @@ export namespace Prisma {
   export type LeadEventCreateWithoutStoreInput = {
     id?: string
     type: string
+    contactName?: string | null
+    contactPhone?: string | null
+    attendanceStatus?: $Enums.AttendanceStatus
+    assignedTo?: string | null
     createdAt?: Date | string
     vehicle?: VehicleCreateNestedOneWithoutLeadEventsInput
   }
@@ -10706,6 +10891,10 @@ export namespace Prisma {
     id?: string
     vehicleId?: string | null
     type: string
+    contactName?: string | null
+    contactPhone?: string | null
+    attendanceStatus?: $Enums.AttendanceStatus
+    assignedTo?: string | null
     createdAt?: Date | string
   }
 
@@ -10808,6 +10997,10 @@ export namespace Prisma {
     vehicleId?: StringNullableFilter<"LeadEvent"> | string | null
     storeId?: StringFilter<"LeadEvent"> | string
     type?: StringFilter<"LeadEvent"> | string
+    contactName?: StringNullableFilter<"LeadEvent"> | string | null
+    contactPhone?: StringNullableFilter<"LeadEvent"> | string | null
+    attendanceStatus?: EnumAttendanceStatusFilter<"LeadEvent"> | $Enums.AttendanceStatus
+    assignedTo?: StringNullableFilter<"LeadEvent"> | string | null
     createdAt?: DateTimeFilter<"LeadEvent"> | Date | string
   }
 
@@ -10949,6 +11142,10 @@ export namespace Prisma {
   export type LeadEventCreateWithoutVehicleInput = {
     id?: string
     type: string
+    contactName?: string | null
+    contactPhone?: string | null
+    attendanceStatus?: $Enums.AttendanceStatus
+    assignedTo?: string | null
     createdAt?: Date | string
     store: StoreCreateNestedOneWithoutLeadEventsInput
   }
@@ -10957,6 +11154,10 @@ export namespace Prisma {
     id?: string
     storeId: string
     type: string
+    contactName?: string | null
+    contactPhone?: string | null
+    attendanceStatus?: $Enums.AttendanceStatus
+    assignedTo?: string | null
     createdAt?: Date | string
   }
 
@@ -11335,6 +11536,10 @@ export namespace Prisma {
     id?: string
     vehicleId?: string | null
     type: string
+    contactName?: string | null
+    contactPhone?: string | null
+    attendanceStatus?: $Enums.AttendanceStatus
+    assignedTo?: string | null
     createdAt?: Date | string
   }
 
@@ -11420,6 +11625,10 @@ export namespace Prisma {
   export type LeadEventUpdateWithoutStoreInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceStatus?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
+    assignedTo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     vehicle?: VehicleUpdateOneWithoutLeadEventsNestedInput
   }
@@ -11428,6 +11637,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     vehicleId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceStatus?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
+    assignedTo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -11435,6 +11648,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     vehicleId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceStatus?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
+    assignedTo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -11449,6 +11666,10 @@ export namespace Prisma {
     id?: string
     storeId: string
     type: string
+    contactName?: string | null
+    contactPhone?: string | null
+    attendanceStatus?: $Enums.AttendanceStatus
+    assignedTo?: string | null
     createdAt?: Date | string
   }
 
@@ -11476,6 +11697,10 @@ export namespace Prisma {
   export type LeadEventUpdateWithoutVehicleInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceStatus?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
+    assignedTo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     store?: StoreUpdateOneRequiredWithoutLeadEventsNestedInput
   }
@@ -11484,6 +11709,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     storeId?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceStatus?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
+    assignedTo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -11491,6 +11720,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     storeId?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    attendanceStatus?: EnumAttendanceStatusFieldUpdateOperationsInput | $Enums.AttendanceStatus
+    assignedTo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

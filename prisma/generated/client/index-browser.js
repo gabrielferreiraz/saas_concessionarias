@@ -179,6 +179,10 @@ exports.Prisma.LeadEventScalarFieldEnum = {
   vehicleId: 'vehicleId',
   storeId: 'storeId',
   type: 'type',
+  contactName: 'contactName',
+  contactPhone: 'contactPhone',
+  attendanceStatus: 'attendanceStatus',
+  assignedTo: 'assignedTo',
   createdAt: 'createdAt'
 };
 
@@ -226,6 +230,12 @@ exports.Status = exports.$Enums.Status = {
   AVAILABLE: 'AVAILABLE',
   RESERVED: 'RESERVED',
   SOLD: 'SOLD'
+};
+
+exports.AttendanceStatus = exports.$Enums.AttendanceStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  DONE: 'DONE'
 };
 
 exports.Prisma.ModelName = {

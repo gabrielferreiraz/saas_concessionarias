@@ -93,15 +93,26 @@ model Vehicle {
 }
 
 model LeadEvent {
-  id        String   @id @default(cuid())
-  vehicleId String?
-  vehicle   Vehicle? @relation(fields: [vehicleId], references: [id])
-  storeId   String
-  store     Store    @relation(fields: [storeId], references: [id])
-  type      String // ex: 'WHATSAPP_CLICK'
-  createdAt DateTime @default(now())
+  id               String           @id @default(cuid())
+  vehicleId        String?
+  vehicle          Vehicle?         @relation(fields: [vehicleId], references: [id])
+  storeId          String
+  store            Store            @relation(fields: [storeId], references: [id])
+  type             String
+  contactName      String?
+  contactPhone     String?
+  attendanceStatus AttendanceStatus @default(PENDING)
+  assignedTo       String?
+  createdAt        DateTime         @default(now())
 
   @@index([storeId])
+  @@index([attendanceStatus])
+}
+
+enum AttendanceStatus {
+  PENDING
+  IN_PROGRESS
+  DONE
 }
 
 model VehicleImage {
