@@ -276,6 +276,7 @@ export default async function Home({
     orderBy: { createdAt: "desc" },
   })
 
+
   const whatsappClean = cleanWhatsAppNumber(store.whatsapp)
   const whatsappHref =
     whatsappClean.length >= 10 ? `https://wa.me/${whatsappClean}` : "#"
