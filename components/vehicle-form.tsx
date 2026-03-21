@@ -379,6 +379,7 @@ export function VehicleForm({ editVehicle }: VehicleFormProps) {
                 </Select>
               </Field>
 
+
               <Field>
                 <FieldLabel htmlFor="transmission">Câmbio</FieldLabel>
                 <Select
