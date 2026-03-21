@@ -339,8 +339,8 @@ export function VehicleForm({ editVehicle }: VehicleFormProps) {
               />
             </Field>
 
-            {/* Cor e Combustível */}
-            <div className="grid gap-4 sm:grid-cols-2">
+            {/* Cor, Combustível e Câmbio */}
+            <div className="grid gap-4 sm:grid-cols-3">
               <Field>
                 <FieldLabel htmlFor="color">Cor</FieldLabel>
                 <Select
