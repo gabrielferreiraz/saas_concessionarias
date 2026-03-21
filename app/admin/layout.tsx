@@ -1,4 +1,3 @@
-PS C: \Users\gabri\Downloads\saas - concessionarias > Get - Content "app\admin\layout.tsx"
 import type { Metadata } from "next"
 import type React from "react"
 import { Toaster } from "@/components/ui/toaster"
@@ -7,8 +6,8 @@ import { resolveCurrentStore } from "@/src/lib/tenant"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "AutosStock | Showroom Digital para ConcessionÃ¡rias",
-  description: "Crie o showroom digital da sua concessionÃ¡ria. Gerencie estoque, capture leads e venda mais pelo WhatsApp.",
+  title: "AutosStock | Showroom Digital para Concessionárias",
+  description: "Crie o showroom digital da sua concessionária. Gerencie estoque, capture leads e venda mais pelo WhatsApp.",
   icons: {
     icon: [
       { url: "/icon-light-32x32.png", media: "(prefers-color-scheme: light)" },
@@ -41,7 +40,6 @@ function hexToOkColor(hex: string): string | null {
     h /= 6
   }
   const H = Math.round(h * 360)
-  const S = Math.round(s * 100)
   const L = Math.round(l * 100)
   const lightness = L / 100
   const chroma = 0.1
