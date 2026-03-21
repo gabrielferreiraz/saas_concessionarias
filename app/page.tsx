@@ -240,7 +240,7 @@ export default async function Home({
   // ─── SHOWROOM DA LOJA (subdomínio com tenant) ─────────────────────────────
   const { minPrice, maxPrice } = await prisma.vehicle
     .aggregate({
-      where: { storeId: store.id },
+      where: { storeId: store.id, status: "AVAILABLE" },
       _min: { price: true },
       _max: { price: true },
     })
@@ -251,7 +251,7 @@ export default async function Home({
 
   const makes = await prisma.vehicle
     .findMany({
-      where: { storeId: store.id },
+      where: { storeId: store.id, status: "AVAILABLE" },
       select: { make: true },
       distinct: ["make"],
       orderBy: { make: "asc" },
@@ -261,6 +261,7 @@ export default async function Home({
   const precoMaxNum = params.precoMax ? Number(params.precoMax) : undefined
   const where = {
     storeId: store.id,
+    status: "AVAILABLE" as const,
     ...(params.marca && { make: params.marca }),
     ...(params.modelo?.trim() && {
       model: { contains: params.modelo.trim(), mode: "insensitive" as const },
