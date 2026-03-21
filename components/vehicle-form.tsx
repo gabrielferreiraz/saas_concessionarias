@@ -399,42 +399,63 @@ export function VehicleForm({ editVehicle }: VehicleFormProps) {
               </Field>
             </div>
 
+            {/* TESTE - Câmbio fora do grid */}
+            <div style={{ border: "2px solid red", padding: "8px" }}>
+              <Field>
+                <FieldLabel htmlFor="transmission2">Câmbio (TESTE)</FieldLabel>
+                <Select
+                  value={formData.transmission}
+                  onValueChange={(v) => setFormData((p) => ({ ...p, transmission: v }))}
+                >
+                  <SelectTrigger id="transmission2">
+                    <SelectValue placeholder="Selecione o câmbio" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="automatico">Automático</SelectItem>
+                    <SelectItem value="manual">Manual</SelectItem>
+                    <SelectItem value="cvt">CVT</SelectItem>
+                    <SelectItem value="automatizado">Automatizado</SelectItem>
+                  </SelectContent>
+                </Select>
+              </Field>
+            </div>
+
             {/* Status */}
             <Field>
               <FieldLabel htmlFor="status">Status</FieldLabel>
-              <Select
-                value={formData.status}
-                onValueChange={(v) =>
-                  setFormData((p) => ({
-                    ...p,
-                    status: v as "AVAILABLE" | "RESERVED" | "SOLD",
-                  }))
-                }
-              >
-                <SelectTrigger id="status">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="AVAILABLE">Disponível</SelectItem>
-                  <SelectItem value="RESERVED">Reservado</SelectItem>
-                  <SelectItem value="SOLD">Vendido</SelectItem>
-                </SelectContent>
-              </Select>
-            </Field>
+                <Select
+                  value={formData.status}
+                  onValueChange={(v) =>
+                    setFormData((p) => ({
+                      ...p,
+                      status: v as "AVAILABLE" | "RESERVED" | "SOLD",
+                    }))
+                  }
+                >
+                  <SelectTrigger id="status">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="AVAILABLE">Disponível</SelectItem>
+                    <SelectItem value="RESERVED">Reservado</SelectItem>
+                    <SelectItem value="SOLD">Vendido</SelectItem>
+                  </SelectContent>
+                </Select>
+              </Field>
 
-            {/* Destaque */}
-            <div className="flex items-center justify-between rounded-lg border p-4">
-              <div>
-                <p className="text-sm font-medium">Veículo em Destaque</p>
-                <p className="text-xs text-muted-foreground">
-                  Aparece na seção de destaques do showroom
-                </p>
+              {/* Destaque */}
+              <div className="flex items-center justify-between rounded-lg border p-4">
+                <div>
+                  <p className="text-sm font-medium">Veículo em Destaque</p>
+                  <p className="text-xs text-muted-foreground">
+                    Aparece na seção de destaques do showroom
+                  </p>
+                </div>
+                <Switch
+                  checked={formData.featured}
+                  onCheckedChange={(v) => setFormData((p) => ({ ...p, featured: v }))}
+                />
               </div>
-              <Switch
-                checked={formData.featured}
-                onCheckedChange={(v) => setFormData((p) => ({ ...p, featured: v }))}
-              />
-            </div>
           </FieldGroup>
 
           {/* Destaques/Opcionais */}
