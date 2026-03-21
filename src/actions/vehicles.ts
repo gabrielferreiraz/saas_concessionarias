@@ -16,6 +16,7 @@ type CreateVehicleInput = {
   km: number
   color?: string
   fuelType?: string
+  transmission?: string
   description?: string
   featured?: boolean
   status?: "AVAILABLE" | "RESERVED" | "SOLD"
@@ -31,6 +32,7 @@ type UpdateVehicleInput = {
   km: number
   color?: string
   fuelType?: string
+  transmission?: string
   description?: string
   featured?: boolean
   status?: "AVAILABLE" | "RESERVED" | "SOLD"
@@ -113,6 +115,7 @@ export async function createVehicleAction(input: CreateVehicleInput) {
         km: input.km,
         color: input.color ?? null,
         fuelType: input.fuelType ?? null,
+        transmission: input.transmission ?? null,
         description: input.description ?? null,
         featured: input.featured ?? false,
         status: input.status ?? "AVAILABLE",
@@ -147,7 +150,6 @@ export async function updateVehicleAction(
     return { success: false, error: "Usuário não vinculado a uma loja." }
   }
 
-  // Verifica ownership
   const existing = await prisma.vehicle.findUnique({
     where: { id: input.id },
     select: { storeId: true },
@@ -172,6 +174,7 @@ export async function updateVehicleAction(
         km: input.km,
         color: input.color ?? null,
         fuelType: input.fuelType ?? null,
+        transmission: input.transmission ?? null,
         description: input.description ?? null,
         featured: input.featured ?? false,
         status: input.status ?? "AVAILABLE",
