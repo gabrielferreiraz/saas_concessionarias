@@ -4,6 +4,8 @@ import { Toaster } from "@/components/ui/toaster"
 import { NextAuthSessionProvider } from "@/components/providers/session-provider"
 import { resolveCurrentStore } from "@/src/lib/tenant"
 import "./globals.css"
+import { GeistSans } from "geist/font/sans"
+import { GeistMono } from "geist/font/mono"
 
 export const metadata: Metadata = {
   title: "AutosStock | Showroom Digital para Concessionárias",
@@ -56,7 +58,7 @@ export default async function RootLayout({
 
   return (
     <html lang="pt-BR">
-      <body className="font-sans antialiased" style={bodyStyle}>
+      <body className={`${GeistSans.className} antialiased`} style={bodyStyle}>
         <NextAuthSessionProvider>
           {children}
           <Toaster />
