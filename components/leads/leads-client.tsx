@@ -4,7 +4,7 @@ import { useState } from "react"
 import Image from "next/image"
 import {
     MessageCircle, Phone, Clock, Link2, Copy,
-    Check, Car, ExternalLink, User, Filter,
+    Check, Car, ExternalLink, Filter,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -20,6 +20,7 @@ import {
     Select, SelectContent, SelectItem,
     SelectTrigger, SelectValue,
 } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import {
     updateLeadStatusAction,
@@ -143,7 +144,6 @@ function QuickResponsePopover({ lead }: { lead: LeadData }) {
 
 function SmartLinkDialog({ lead }: { lead: LeadData }) {
     const [copied, setCopied] = useState(false)
-    const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "autosstock.uk"
     const vehicleUrl = lead.vehicle
         ? `${typeof window !== "undefined" ? window.location.origin : ""}/veiculo/${lead.vehicle.id}`
         : ""
@@ -197,16 +197,58 @@ function SmartLinkDialog({ lead }: { lead: LeadData }) {
                             {vehicleUrl}
                         </div>
                         <Button onClick={handleCopy} size="sm">
-                            {copied ? <><Check className="size-4" /> Copiado</> : <><Copy className="size-4" /> Copiar</>}
+                            {copied
+                                ? <><Check className="size-4" /> Copiado</>
+                                : <><Copy className="size-4" /> Copiar</>
+                            }
                         </Button>
                     </div>
-                    <Button variant="outline" className="w-full" onClick={() => window.open(vehicleUrl, "_blank")}>
+                    <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => window.open(vehicleUrl, "_blank")}
+                    >
                         <ExternalLink className="size-4" />
                         Abrir página do veículo
                     </Button>
                 </div>
             </DialogContent>
         </Dialog>
+    )
+}
+
+function AssigneeInput({
+    leadId,
+    initialValue,
+    onChange,
+}: {
+    leadId: string
+    initialValue: string | null
+    onChange: (id: string, value: string) => void
+}) {
+    const [value, setValue] = useState(initialValue ?? "")
+    const [saved, setSaved] = useState(false)
+
+    const handleBlur = async () => {
+        if (value === (initialValue ?? "")) return
+        onChange(leadId, value)
+        setSaved(true)
+        setTimeout(() => setSaved(false), 2000)
+    }
+
+    return (
+        <div className="relative">
+            <Input
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                onBlur={handleBlur}
+                placeholder="Responsável..."
+                className="h-8 w-[130px] text-xs pr-6"
+            />
+            {saved && (
+                <Check className="absolute right-2 top-1/2 -translate-y-1/2 size-3 text-emerald-500" />
+            )}
+        </div>
     )
 }
 
@@ -286,6 +328,12 @@ function LeadRow({
                     </SelectContent>
                 </Select>
 
+                <AssigneeInput
+                    leadId={lead.id}
+                    initialValue={lead.assignedTo}
+                    onChange={onAssigneeChange}
+                />
+
                 <div className="flex items-center gap-2">
                     <SmartLinkDialog lead={lead} />
                     <QuickResponsePopover lead={lead} />
@@ -335,7 +383,6 @@ export function LeadsClient({
                 </p>
             </div>
 
-            {/* Stats */}
             <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
                 {[
                     { key: "todos", label: "Total", value: counts.todos, color: "ring-primary" },
@@ -361,13 +408,14 @@ export function LeadsClient({
                 ))}
             </div>
 
-            {/* Lista */}
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between border-b pb-4">
                     <CardTitle className="text-base font-medium">Leads Recebidos</CardTitle>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Filter className="size-4" />
-                        <span>{filter === "todos" ? "Todos" : statusConfig[filter as AttendanceStatus]?.label}</span>
+                        <span>
+                            {filter === "todos" ? "Todos" : statusConfig[filter as AttendanceStatus]?.label}
+                        </span>
                     </div>
                 </CardHeader>
                 <CardContent className="p-0">
