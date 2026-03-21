@@ -42,7 +42,6 @@ interface VehicleFormData {
 }
 
 interface VehicleFormProps {
-  // Para modo edição — passa os dados existentes
   editVehicle?: {
     id: string
     make: string
@@ -52,6 +51,7 @@ interface VehicleFormProps {
     price: number
     color?: string | null
     fuelType?: string | null
+    transmission?: string | null  // ← adicionar esta linha
     featured: boolean
     status: "AVAILABLE" | "RESERVED" | "SOLD"
     description?: string | null
@@ -373,6 +373,24 @@ export function VehicleForm({ editVehicle }: VehicleFormProps) {
                         {fuel.label}
                       </SelectItem>
                     ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="transmission">Câmbio</FieldLabel>
+                <Select
+                  value={formData.transmission}
+                  onValueChange={(v) => setFormData((p) => ({ ...p, transmission: v }))}
+                >
+                  <SelectTrigger id="transmission">
+                    <SelectValue placeholder="Selecione o câmbio" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="automatico">Automático</SelectItem>
+                    <SelectItem value="manual">Manual</SelectItem>
+                    <SelectItem value="cvt">CVT</SelectItem>
+                    <SelectItem value="automatizado">Automatizado</SelectItem>
                   </SelectContent>
                 </Select>
               </Field>
