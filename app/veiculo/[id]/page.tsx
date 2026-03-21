@@ -279,6 +279,17 @@ export default async function VehicleDetailsPage({
             </div>
           </div>
         </div>
+        {/* Botão flutuante mobile */}
+        {whatsappClean.length >= 10 && (
+          <WhatsAppTrackedLink
+            href={whatsappHref}
+            vehicleId={vehicle.id}
+            className="fixed bottom-6 right-6 z-50 flex min-h-[44px] min-w-[44px] size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-105 lg:hidden"
+            aria-label="Falar no WhatsApp"
+          >
+            <MessageCircle className="size-7" />
+          </WhatsAppTrackedLink>
+        )}
       </main>
     </>
   )
