@@ -34,7 +34,7 @@ export default async function FlyerEstoquePage() {
 
   const store = await prisma.store.findUnique({
     where: { id: user.storeId },
-    select: { name: true, logoUrl: true, domain: true },
+    select: { name: true, logoUrl: true, customDomain: true, subdomain: true },
   })
 
   const vehicles = await prisma.vehicle.findMany({
@@ -46,8 +46,10 @@ export default async function FlyerEstoquePage() {
   })
 
   const headerList = await headers()
+  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "autosstock.uk"
   const host =
-    store?.domain ??
+    store?.customDomain ??
+    (store?.subdomain ? `${store.subdomain}.${rootDomain}` : null) ??
     headerList.get("x-forwarded-host") ??
     headerList.get("host") ??
     ""
