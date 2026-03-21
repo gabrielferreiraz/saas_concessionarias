@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { notFound } from "next/navigation"
 import { prisma } from "@/src/lib/prisma"
 import { resolveCurrentStore } from "@/src/lib/tenant"
 import { Button } from "@/components/ui/button"
@@ -6,20 +7,38 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { VehicleGallery } from "@/components/vehicle-gallery"
 import { WhatsAppTrackedLink } from "@/components/whatsapp-tracked-link"
-import { ArrowLeft, MessageCircle } from "lucide-react"
+import {
+  ArrowLeft, MessageCircle, Calendar,
+  Gauge, Fuel, Palette,
+} from "lucide-react"
 import type { Metadata } from "next"
 
-function cleanWhatsAppNumber(raw: string): string {
+function cleanWhatsApp(raw: string) {
   return raw.replace(/\D/g, "")
 }
 
-function formatPriceForMeta(value: number) {
+function formatPrice(value: number) {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
   }).format(value)
+}
+
+function formatKm(value: number) {
+  return new Intl.NumberFormat("pt-BR").format(value)
+}
+
+const STATUS_LABEL: Record<string, string> = {
+  AVAILABLE: "Disponível",
+  RESERVED: "Reservado",
+  SOLD: "Vendido",
+}
+
+const STATUS_VARIANT: Record<string, "default" | "secondary" | "destructive"> = {
+  AVAILABLE: "default",
+  RESERVED: "secondary",
+  SOLD: "destructive",
 }
 
 export async function generateMetadata({
@@ -36,28 +55,41 @@ export async function generateMetadata({
     include: { images: { orderBy: { order: "asc" } } },
   })
 
-  if (!vehicle) {
-    return { title: "Veículo não encontrado" }
-  }
+  if (!vehicle) return { title: "Veículo não encontrado" }
 
-  const cover =
-    vehicle.images.find((i) => i.isCover) ?? vehicle.images[0]
-  const ogImage = cover?.url ?? undefined
-  const title = `${vehicle.make} ${vehicle.model} - ${formatPriceForMeta(vehicle.price)}`
-  const formatKm = (v: number) =>
-    new Intl.NumberFormat("pt-BR").format(v)
-  const descriptionShort = vehicle.description
-    ? vehicle.description.slice(0, 160).replace(/\n/g, " ").trim() + (vehicle.description.length > 160 ? "…" : "")
-    : ""
-  const description = [vehicle.year, `${formatKm(vehicle.km)} km`, descriptionShort].filter(Boolean).join(" | ")
+  const cover = vehicle.images.find((i) => i.isCover) ?? vehicle.images[0]
+  const ogImage = cover?.url
+  const title = `${vehicle.make} ${vehicle.model} ${vehicle.year} — ${formatPrice(vehicle.price)} | ${store.name}`
+  const description = [
+    `${vehicle.make} ${vehicle.model} ${vehicle.year}`,
+    `${formatKm(vehicle.km)} km`,
+    vehicle.color ? `Cor: ${vehicle.color}` : null,
+    vehicle.fuelType ? `Combustível: ${vehicle.fuelType}` : null,
+    vehicle.description?.slice(0, 100),
+  ].filter(Boolean).join(" · ")
+
+  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "autosstock.uk"
+  const canonicalUrl = `https://${store.subdomain}.${rootDomain}/veiculo/${id}`
 
   return {
     title,
     description,
+    alternates: { canonical: canonicalUrl },
+    robots: { index: true, follow: true },
     openGraph: {
       title,
       description,
-      ...(ogImage && { images: [{ url: ogImage, width: 1200, height: 630, alt: `${vehicle.make} ${vehicle.model}` }] }),
+      url: canonicalUrl,
+      type: "website",
+      siteName: store.name,
+      ...(ogImage && {
+        images: [{
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: `${vehicle.make} ${vehicle.model} ${vehicle.year}`,
+        }],
+      }),
     },
     twitter: {
       card: "summary_large_image",
@@ -75,23 +107,7 @@ export default async function VehicleDetailsPage({
 }) {
   const { id } = await params
   const store = await resolveCurrentStore()
-
-  if (!store) {
-    return (
-      <main className="min-h-screen bg-background">
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-muted/20 py-16 text-center">
-            <h1 className="text-xl font-semibold text-foreground">
-              Loja não encontrada
-            </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Verifique o endereço ou entre em contato com o suporte.
-            </p>
-          </div>
-        </div>
-      </main>
-    )
-  }
+  if (!store) notFound()
 
   const vehicle = await prisma.vehicle.findFirst({
     where: { id, storeId: store.id },
@@ -101,126 +117,160 @@ export default async function VehicleDetailsPage({
     },
   })
 
-  if (!vehicle) {
-    return (
+  if (!vehicle) notFound()
+
+  const galleryImages = vehicle.images.map((img) => ({ id: img.id, url: img.url }))
+  const coverUrl = vehicle.images.find((i) => i.isCover)?.url
+    ?? vehicle.images[0]?.url
+    ?? "https://placehold.co/1200x675?text=Sem+foto"
+
+  const whatsappClean = cleanWhatsApp(vehicle.store.whatsapp ?? "")
+  const whatsappMessage = `Olá! Vi o anúncio do ${vehicle.make} ${vehicle.model} (${vehicle.year}) no site e gostaria de mais informações.`
+  const whatsappHref = whatsappClean.length >= 10
+    ? `https://wa.me/${whatsappClean}?text=${encodeURIComponent(whatsappMessage)}`
+    : "#"
+
+  // JSON-LD para rich snippets do Google
+  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "autosstock.uk"
+  const canonicalUrl = `https://${store.subdomain}.${rootDomain}/veiculo/${id}`
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Car",
+    name: `${vehicle.make} ${vehicle.model}`,
+    vehicleModelDate: vehicle.year.toString(),
+    mileageFromOdometer: {
+      "@type": "QuantitativeValue",
+      value: vehicle.km,
+      unitCode: "KMT",
+    },
+    offers: {
+      "@type": "Offer",
+      price: vehicle.price,
+      priceCurrency: "BRL",
+      availability: vehicle.status === "AVAILABLE"
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      url: canonicalUrl,
+      seller: {
+        "@type": "AutoDealer",
+        name: store.name,
+      },
+    },
+    ...(vehicle.color && { color: vehicle.color }),
+    ...(vehicle.fuelType && { fuelType: vehicle.fuelType }),
+    ...(vehicle.description && { description: vehicle.description }),
+    image: vehicle.images.map((i) => i.url),
+    url: canonicalUrl,
+  }
+
+  const specs = [
+    { icon: Calendar, label: "Ano", value: vehicle.year.toString() },
+    { icon: Gauge, label: "Quilometragem", value: `${formatKm(vehicle.km)} km` },
+    ...(vehicle.color ? [{ icon: Palette, label: "Cor", value: vehicle.color }] : []),
+    ...(vehicle.fuelType ? [{ icon: Fuel, label: "Combustível", value: vehicle.fuelType }] : []),
+  ]
+
+  return (
+    <>
+      {/* JSON-LD para Google */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <main className="min-h-screen bg-background">
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-muted/20 py-16 text-center">
-            <h1 className="text-xl font-semibold text-foreground">
-              Veículo não encontrado ou indisponível
-            </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              O anúncio pode ter sido removido ou o link está incorreto.
-            </p>
-            <Button asChild className="mt-6">
-              <Link href="/" className="gap-2">
+        {/* Header */}
+        <div className="border-b bg-card">
+          <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+              >
                 <ArrowLeft className="size-4" />
                 Voltar para o estoque
               </Link>
-            </Button>
+              <span className="text-xs text-muted-foreground">
+                Ref: #{vehicle.id.slice(-6).toUpperCase()}
+              </span>
+            </div>
           </div>
         </div>
-      </main>
-    )
-  }
 
-  const formatPrice = (value: number) =>
-    new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value)
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-2">
+            {/* Galeria */}
+            <VehicleGallery
+              images={galleryImages}
+              make={vehicle.make}
+              model={vehicle.model}
+              coverUrl={coverUrl}
+            />
 
-  const formatKm = (value: number) =>
-    new Intl.NumberFormat("pt-BR").format(value)
+            {/* Ficha */}
+            <div className="space-y-6">
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+                  {vehicle.make} {vehicle.model}
+                </h1>
+                <p className="mt-3 text-3xl font-bold sm:text-4xl">
+                  {formatPrice(vehicle.price)}
+                </p>
+              </div>
 
-  const coverImage = vehicle.images.find((i) => i.isCover) ?? vehicle.images[0]
-  const coverUrl = coverImage?.url ?? "https://placehold.co/1200x675?text=Sem+foto"
-  const galleryImages = vehicle.images.map((img) => ({ id: img.id, url: img.url }))
+              {/* Badges */}
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary">{vehicle.year}</Badge>
+                <Badge variant="secondary">{formatKm(vehicle.km)} km</Badge>
+                <Badge variant={STATUS_VARIANT[vehicle.status]}>
+                  {STATUS_LABEL[vehicle.status] ?? vehicle.status}
+                </Badge>
+              </div>
 
-  const whatsappRaw = vehicle.store.whatsapp ?? ""
-  const whatsappClean = cleanWhatsAppNumber(whatsappRaw)
-  const message = `Olá! Vi o anúncio do ${vehicle.make} ${vehicle.model} (${vehicle.year}) no site e gostaria de mais informações.`
-  const whatsappHref =
-    whatsappClean.length >= 10
-      ? `https://wa.me/${whatsappClean}?text=${encodeURIComponent(message)}`
-      : "#"
+              {/* Specs */}
+              {specs.length > 0 && (
+                <Card>
+                  <CardContent className="p-5">
+                    <div className="grid grid-cols-2 gap-4">
+                      {specs.map((spec) => (
+                        <div key={spec.label} className="flex items-start gap-3">
+                          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted">
+                            <spec.icon className="size-4 text-muted-foreground" />
+                          </div>
+                          <div>
+                            <p className="text-xs text-muted-foreground">{spec.label}</p>
+                            <p className="text-sm font-medium capitalize">{spec.value}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
-  return (
-    <main className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b border-border bg-card">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <ArrowLeft className="size-4" />
-              Voltar para o estoque
-            </Link>
-            <span className="text-xs text-muted-foreground">
-              Ref: #{vehicle.id.slice(-6).toUpperCase()}
-            </span>
-          </div>
-        </div>
-      </div>
+              {/* Descrição */}
+              {vehicle.description && (
+                <Card>
+                  <CardHeader>
+                    <h2 className="text-base font-semibold">Descrição</h2>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="whitespace-pre-wrap text-sm text-muted-foreground leading-relaxed">
+                      {vehicle.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
 
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="grid gap-8 lg:grid-cols-2">
-          {/* Galeria interativa */}
-          <VehicleGallery
-            images={galleryImages}
-            make={vehicle.make}
-            model={vehicle.model}
-            coverUrl={coverUrl}
-          />
-
-          {/* Ficha técnica */}
-          <div className="space-y-6">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                {vehicle.make} {vehicle.model}
-              </h1>
-              <p className="mt-3 text-3xl font-bold text-foreground sm:text-4xl">
-                {formatPrice(vehicle.price)}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="secondary">{vehicle.year}</Badge>
-              <Badge variant="secondary">{formatKm(vehicle.km)} km</Badge>
-              <Badge variant="outline">{vehicle.status}</Badge>
-            </div>
-
-            {vehicle.description && (
-              <Card>
-                <CardHeader>
-                  <h2 className="text-lg font-semibold text-foreground">
-                    Descrição
-                  </h2>
-                </CardHeader>
-                <CardContent>
-                  <p className="whitespace-pre-wrap text-sm text-muted-foreground leading-relaxed">
-                    {vehicle.description}
-                  </p>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* CTA WhatsApp — área de toque mínima 44x44px */}
-            <div className="pt-2">
+              {/* CTA WhatsApp */}
               <Button
                 asChild
                 size="lg"
-                className="min-h-[44px] min-w-[44px] w-full gap-2 bg-[#25D366] py-3 text-white hover:bg-[#20BD5A] sm:w-auto sm:min-w-[240px]"
+                className="w-full gap-2 bg-[#25D366] text-white hover:bg-[#20BD5A] sm:w-auto sm:min-w-[240px]"
               >
                 <WhatsAppTrackedLink
                   href={whatsappHref}
                   vehicleId={vehicle.id}
-                  aria-label="Falar com consultor no WhatsApp"
-                  className="inline-flex min-h-[44px] items-center justify-center"
                 >
                   <MessageCircle className="size-5 shrink-0" />
                   Falar com Consultor
@@ -229,7 +279,7 @@ export default async function VehicleDetailsPage({
             </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   )
 }
