@@ -19,6 +19,7 @@ export function FlyerActions({ publicUrl }: FlyerActionsProps) {
     } catch {
       setCopied(false)
     }
+
   }
 
   return (
