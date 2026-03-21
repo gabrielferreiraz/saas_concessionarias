@@ -4900,6 +4900,7 @@ export namespace Prisma {
     km: number | null
     color: string | null
     fuelType: string | null
+    transmission: string | null
     description: string | null
     featured: boolean | null
     status: $Enums.Status | null
@@ -4917,6 +4918,7 @@ export namespace Prisma {
     km: number | null
     color: string | null
     fuelType: string | null
+    transmission: string | null
     description: string | null
     featured: boolean | null
     status: $Enums.Status | null
@@ -4934,6 +4936,7 @@ export namespace Prisma {
     km: number
     color: number
     fuelType: number
+    transmission: number
     description: number
     featured: number
     status: number
@@ -4965,6 +4968,7 @@ export namespace Prisma {
     km?: true
     color?: true
     fuelType?: true
+    transmission?: true
     description?: true
     featured?: true
     status?: true
@@ -4982,6 +4986,7 @@ export namespace Prisma {
     km?: true
     color?: true
     fuelType?: true
+    transmission?: true
     description?: true
     featured?: true
     status?: true
@@ -4999,6 +5004,7 @@ export namespace Prisma {
     km?: true
     color?: true
     fuelType?: true
+    transmission?: true
     description?: true
     featured?: true
     status?: true
@@ -5103,6 +5109,7 @@ export namespace Prisma {
     km: number
     color: string | null
     fuelType: string | null
+    transmission: string | null
     description: string | null
     featured: boolean
     status: $Enums.Status
@@ -5139,6 +5146,7 @@ export namespace Prisma {
     km?: boolean
     color?: boolean
     fuelType?: boolean
+    transmission?: boolean
     description?: boolean
     featured?: boolean
     status?: boolean
@@ -5160,6 +5168,7 @@ export namespace Prisma {
     km?: boolean
     color?: boolean
     fuelType?: boolean
+    transmission?: boolean
     description?: boolean
     featured?: boolean
     status?: boolean
@@ -5178,6 +5187,7 @@ export namespace Prisma {
     km?: boolean
     color?: boolean
     fuelType?: boolean
+    transmission?: boolean
     description?: boolean
     featured?: boolean
     status?: boolean
@@ -5196,6 +5206,7 @@ export namespace Prisma {
     km?: boolean
     color?: boolean
     fuelType?: boolean
+    transmission?: boolean
     description?: boolean
     featured?: boolean
     status?: boolean
@@ -5204,7 +5215,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type VehicleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "make" | "model" | "year" | "price" | "km" | "color" | "fuelType" | "description" | "featured" | "status" | "storeId" | "createdAt" | "updatedAt", ExtArgs["result"]["vehicle"]>
+  export type VehicleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "make" | "model" | "year" | "price" | "km" | "color" | "fuelType" | "transmission" | "description" | "featured" | "status" | "storeId" | "createdAt" | "updatedAt", ExtArgs["result"]["vehicle"]>
   export type VehicleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     store?: boolean | StoreDefaultArgs<ExtArgs>
     images?: boolean | Vehicle$imagesArgs<ExtArgs>
@@ -5234,6 +5245,7 @@ export namespace Prisma {
       km: number
       color: string | null
       fuelType: string | null
+      transmission: string | null
       description: string | null
       featured: boolean
       status: $Enums.Status
@@ -5674,6 +5686,7 @@ export namespace Prisma {
     readonly km: FieldRef<"Vehicle", 'Int'>
     readonly color: FieldRef<"Vehicle", 'String'>
     readonly fuelType: FieldRef<"Vehicle", 'String'>
+    readonly transmission: FieldRef<"Vehicle", 'String'>
     readonly description: FieldRef<"Vehicle", 'String'>
     readonly featured: FieldRef<"Vehicle", 'Boolean'>
     readonly status: FieldRef<"Vehicle", 'Status'>
@@ -8455,6 +8468,7 @@ export namespace Prisma {
     km: 'km',
     color: 'color',
     fuelType: 'fuelType',
+    transmission: 'transmission',
     description: 'description',
     featured: 'featured',
     status: 'status',
@@ -8902,6 +8916,7 @@ export namespace Prisma {
     km?: IntFilter<"Vehicle"> | number
     color?: StringNullableFilter<"Vehicle"> | string | null
     fuelType?: StringNullableFilter<"Vehicle"> | string | null
+    transmission?: StringNullableFilter<"Vehicle"> | string | null
     description?: StringNullableFilter<"Vehicle"> | string | null
     featured?: BoolFilter<"Vehicle"> | boolean
     status?: EnumStatusFilter<"Vehicle"> | $Enums.Status
@@ -8922,6 +8937,7 @@ export namespace Prisma {
     km?: SortOrder
     color?: SortOrderInput | SortOrder
     fuelType?: SortOrderInput | SortOrder
+    transmission?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     featured?: SortOrder
     status?: SortOrder
@@ -8945,6 +8961,7 @@ export namespace Prisma {
     km?: IntFilter<"Vehicle"> | number
     color?: StringNullableFilter<"Vehicle"> | string | null
     fuelType?: StringNullableFilter<"Vehicle"> | string | null
+    transmission?: StringNullableFilter<"Vehicle"> | string | null
     description?: StringNullableFilter<"Vehicle"> | string | null
     featured?: BoolFilter<"Vehicle"> | boolean
     status?: EnumStatusFilter<"Vehicle"> | $Enums.Status
@@ -8965,6 +8982,7 @@ export namespace Prisma {
     km?: SortOrder
     color?: SortOrderInput | SortOrder
     fuelType?: SortOrderInput | SortOrder
+    transmission?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     featured?: SortOrder
     status?: SortOrder
@@ -8990,6 +9008,7 @@ export namespace Prisma {
     km?: IntWithAggregatesFilter<"Vehicle"> | number
     color?: StringNullableWithAggregatesFilter<"Vehicle"> | string | null
     fuelType?: StringNullableWithAggregatesFilter<"Vehicle"> | string | null
+    transmission?: StringNullableWithAggregatesFilter<"Vehicle"> | string | null
     description?: StringNullableWithAggregatesFilter<"Vehicle"> | string | null
     featured?: BoolWithAggregatesFilter<"Vehicle"> | boolean
     status?: EnumStatusWithAggregatesFilter<"Vehicle"> | $Enums.Status
@@ -9412,6 +9431,7 @@ export namespace Prisma {
     km: number
     color?: string | null
     fuelType?: string | null
+    transmission?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
@@ -9431,6 +9451,7 @@ export namespace Prisma {
     km: number
     color?: string | null
     fuelType?: string | null
+    transmission?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
@@ -9450,6 +9471,7 @@ export namespace Prisma {
     km?: IntFieldUpdateOperationsInput | number
     color?: NullableStringFieldUpdateOperationsInput | string | null
     fuelType?: NullableStringFieldUpdateOperationsInput | string | null
+    transmission?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -9469,6 +9491,7 @@ export namespace Prisma {
     km?: IntFieldUpdateOperationsInput | number
     color?: NullableStringFieldUpdateOperationsInput | string | null
     fuelType?: NullableStringFieldUpdateOperationsInput | string | null
+    transmission?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -9488,6 +9511,7 @@ export namespace Prisma {
     km: number
     color?: string | null
     fuelType?: string | null
+    transmission?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
@@ -9505,6 +9529,7 @@ export namespace Prisma {
     km?: IntFieldUpdateOperationsInput | number
     color?: NullableStringFieldUpdateOperationsInput | string | null
     fuelType?: NullableStringFieldUpdateOperationsInput | string | null
+    transmission?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -9521,6 +9546,7 @@ export namespace Prisma {
     km?: IntFieldUpdateOperationsInput | number
     color?: NullableStringFieldUpdateOperationsInput | string | null
     fuelType?: NullableStringFieldUpdateOperationsInput | string | null
+    transmission?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -10017,6 +10043,7 @@ export namespace Prisma {
     km?: SortOrder
     color?: SortOrder
     fuelType?: SortOrder
+    transmission?: SortOrder
     description?: SortOrder
     featured?: SortOrder
     status?: SortOrder
@@ -10040,6 +10067,7 @@ export namespace Prisma {
     km?: SortOrder
     color?: SortOrder
     fuelType?: SortOrder
+    transmission?: SortOrder
     description?: SortOrder
     featured?: SortOrder
     status?: SortOrder
@@ -10057,6 +10085,7 @@ export namespace Prisma {
     km?: SortOrder
     color?: SortOrder
     fuelType?: SortOrder
+    transmission?: SortOrder
     description?: SortOrder
     featured?: SortOrder
     status?: SortOrder
@@ -10811,6 +10840,7 @@ export namespace Prisma {
     km: number
     color?: string | null
     fuelType?: string | null
+    transmission?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
@@ -10829,6 +10859,7 @@ export namespace Prisma {
     km: number
     color?: string | null
     fuelType?: string | null
+    transmission?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
@@ -10936,6 +10967,7 @@ export namespace Prisma {
     km?: IntFilter<"Vehicle"> | number
     color?: StringNullableFilter<"Vehicle"> | string | null
     fuelType?: StringNullableFilter<"Vehicle"> | string | null
+    transmission?: StringNullableFilter<"Vehicle"> | string | null
     description?: StringNullableFilter<"Vehicle"> | string | null
     featured?: BoolFilter<"Vehicle"> | boolean
     status?: EnumStatusFilter<"Vehicle"> | $Enums.Status
@@ -11264,6 +11296,7 @@ export namespace Prisma {
     km: number
     color?: string | null
     fuelType?: string | null
+    transmission?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
@@ -11282,6 +11315,7 @@ export namespace Prisma {
     km: number
     color?: string | null
     fuelType?: string | null
+    transmission?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
@@ -11351,6 +11385,7 @@ export namespace Prisma {
     km?: IntFieldUpdateOperationsInput | number
     color?: NullableStringFieldUpdateOperationsInput | string | null
     fuelType?: NullableStringFieldUpdateOperationsInput | string | null
+    transmission?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -11369,6 +11404,7 @@ export namespace Prisma {
     km?: IntFieldUpdateOperationsInput | number
     color?: NullableStringFieldUpdateOperationsInput | string | null
     fuelType?: NullableStringFieldUpdateOperationsInput | string | null
+    transmission?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -11428,6 +11464,7 @@ export namespace Prisma {
     km: number
     color?: string | null
     fuelType?: string | null
+    transmission?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
@@ -11446,6 +11483,7 @@ export namespace Prisma {
     km: number
     color?: string | null
     fuelType?: string | null
+    transmission?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
@@ -11480,6 +11518,7 @@ export namespace Prisma {
     km?: IntFieldUpdateOperationsInput | number
     color?: NullableStringFieldUpdateOperationsInput | string | null
     fuelType?: NullableStringFieldUpdateOperationsInput | string | null
+    transmission?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -11498,6 +11537,7 @@ export namespace Prisma {
     km?: IntFieldUpdateOperationsInput | number
     color?: NullableStringFieldUpdateOperationsInput | string | null
     fuelType?: NullableStringFieldUpdateOperationsInput | string | null
+    transmission?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -11516,6 +11556,7 @@ export namespace Prisma {
     km: number
     color?: string | null
     fuelType?: string | null
+    transmission?: string | null
     description?: string | null
     featured?: boolean
     status?: $Enums.Status
@@ -11552,6 +11593,7 @@ export namespace Prisma {
     km?: IntFieldUpdateOperationsInput | number
     color?: NullableStringFieldUpdateOperationsInput | string | null
     fuelType?: NullableStringFieldUpdateOperationsInput | string | null
+    transmission?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -11570,6 +11612,7 @@ export namespace Prisma {
     km?: IntFieldUpdateOperationsInput | number
     color?: NullableStringFieldUpdateOperationsInput | string | null
     fuelType?: NullableStringFieldUpdateOperationsInput | string | null
+    transmission?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -11588,6 +11631,7 @@ export namespace Prisma {
     km?: IntFieldUpdateOperationsInput | number
     color?: NullableStringFieldUpdateOperationsInput | string | null
     fuelType?: NullableStringFieldUpdateOperationsInput | string | null
+    transmission?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     featured?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status

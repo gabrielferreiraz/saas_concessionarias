@@ -34,6 +34,7 @@ interface VehicleFormData {
   price: string
   color: string
   fuelType: string
+  transmission: string
   featured: boolean
   status: "AVAILABLE" | "RESERVED" | "SOLD"
   highlights: string[]
@@ -139,6 +140,7 @@ export function VehicleForm({ editVehicle }: VehicleFormProps) {
     price: editVehicle ? numberToCurrencyString(editVehicle.price) : "",
     color: editVehicle?.color ?? "",
     fuelType: editVehicle?.fuelType ?? "",
+    transmission: editVehicle?.transmission ?? "",
     featured: editVehicle?.featured ?? false,
     status: editVehicle?.status ?? "AVAILABLE",
     highlights: [],

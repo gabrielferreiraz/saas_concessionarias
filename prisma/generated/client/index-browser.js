@@ -166,6 +166,7 @@ exports.Prisma.VehicleScalarFieldEnum = {
   km: 'km',
   color: 'color',
   fuelType: 'fuelType',
+  transmission: 'transmission',
   description: 'description',
   featured: 'featured',
   status: 'status',

@@ -81,6 +81,7 @@ model Vehicle {
   km          Int
   color       String?
   fuelType    String?
+  transmission String?
   description String?
   featured    Boolean     @default(false)
   status      Status      @default(AVAILABLE)

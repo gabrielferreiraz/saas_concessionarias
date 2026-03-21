@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { notFound } from "next/navigation"
 import { prisma } from "@/src/lib/prisma"
 import { resolveCurrentStore } from "@/src/lib/tenant"
@@ -8,8 +9,10 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { VehicleGallery } from "@/components/vehicle-gallery"
 import { WhatsAppTrackedLink } from "@/components/whatsapp-tracked-link"
 import {
-  ArrowLeft, MessageCircle, Calendar,
-  Gauge, Fuel, Palette,
+  ArrowLeft, MessageCircle, Calendar, Gauge,
+  Fuel, Palette, Cog, Sun, Sofa, Shield,
+  Mountain, Monitor, Camera, Navigation,
+  Wind, ParkingCircle, Lightbulb, Check,
 } from "lucide-react"
 import type { Metadata } from "next"
 
@@ -39,6 +42,32 @@ const STATUS_VARIANT: Record<string, "default" | "secondary" | "destructive"> = 
   AVAILABLE: "default",
   RESERVED: "secondary",
   SOLD: "destructive",
+}
+
+const OPTION_ICONS: Record<string, React.ElementType> = {
+  "teto-solar": Sun,
+  "bancos-couro": Sofa,
+  "blindado": Shield,
+  "tracao-4x4": Mountain,
+  "multimidia": Monitor,
+  "camera-re": Camera,
+  "piloto-automatico": Navigation,
+  "ar-digital": Wind,
+  "sensor-estacionamento": ParkingCircle,
+  "farois-led": Lightbulb,
+}
+
+const OPTION_LABELS: Record<string, string> = {
+  "teto-solar": "Teto Solar",
+  "bancos-couro": "Bancos em Couro",
+  "blindado": "Blindado",
+  "tracao-4x4": "Tração 4x4",
+  "multimidia": "Multimídia",
+  "camera-re": "Câmera de Ré",
+  "piloto-automatico": "Piloto Automático",
+  "ar-digital": "Ar Digital",
+  "sensor-estacionamento": "Sensor de Estacionamento",
+  "farois-led": "Faróis LED",
 }
 
 export async function generateMetadata({
@@ -83,12 +112,7 @@ export async function generateMetadata({
       type: "website",
       siteName: store.name,
       ...(ogImage && {
-        images: [{
-          url: ogImage,
-          width: 1200,
-          height: 630,
-          alt: `${vehicle.make} ${vehicle.model} ${vehicle.year}`,
-        }],
+        images: [{ url: ogImage, width: 1200, height: 630, alt: `${vehicle.make} ${vehicle.model}` }],
       }),
     },
     twitter: {
@@ -119,20 +143,31 @@ export default async function VehicleDetailsPage({
 
   if (!vehicle) notFound()
 
+  // Veículos relacionados (mesma marca, exceto o atual)
+  const related = await prisma.vehicle.findMany({
+    where: {
+      storeId: store.id,
+      status: "AVAILABLE",
+      make: vehicle.make,
+      id: { not: vehicle.id },
+    },
+    include: { images: { orderBy: { order: "asc" }, take: 1 } },
+    take: 4,
+  })
+
   const galleryImages = vehicle.images.map((img) => ({ id: img.id, url: img.url }))
   const coverUrl = vehicle.images.find((i) => i.isCover)?.url
     ?? vehicle.images[0]?.url
     ?? "https://placehold.co/1200x675?text=Sem+foto"
 
   const whatsappClean = cleanWhatsApp(vehicle.store.whatsapp ?? "")
-  const whatsappMessage = `Olá! Vi o anúncio do ${vehicle.make} ${vehicle.model} (${vehicle.year}) no site e gostaria de mais informações.`
+  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "autosstock.uk"
+  const vehicleUrl = `https://${store.subdomain}.${rootDomain}/veiculo/${vehicle.id}`
+  const whatsappMessage = `Olá! Vi o ${vehicle.make} ${vehicle.model} (${vehicle.year}) e tenho interesse. Veja o anúncio: ${vehicleUrl}`
   const whatsappHref = whatsappClean.length >= 10
     ? `https://wa.me/${whatsappClean}?text=${encodeURIComponent(whatsappMessage)}`
     : "#"
 
-  // JSON-LD para rich snippets do Google
-  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "autosstock.uk"
-  const canonicalUrl = `https://${store.subdomain}.${rootDomain}/veiculo/${id}`
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Car",
@@ -150,17 +185,14 @@ export default async function VehicleDetailsPage({
       availability: vehicle.status === "AVAILABLE"
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
-      url: canonicalUrl,
-      seller: {
-        "@type": "AutoDealer",
-        name: store.name,
-      },
+      url: vehicleUrl,
+      seller: { "@type": "AutoDealer", name: store.name },
     },
     ...(vehicle.color && { color: vehicle.color }),
     ...(vehicle.fuelType && { fuelType: vehicle.fuelType }),
     ...(vehicle.description && { description: vehicle.description }),
     image: vehicle.images.map((i) => i.url),
-    url: canonicalUrl,
+    url: vehicleUrl,
   }
 
   const specs = [
@@ -168,11 +200,18 @@ export default async function VehicleDetailsPage({
     { icon: Gauge, label: "Quilometragem", value: `${formatKm(vehicle.km)} km` },
     ...(vehicle.color ? [{ icon: Palette, label: "Cor", value: vehicle.color }] : []),
     ...(vehicle.fuelType ? [{ icon: Fuel, label: "Combustível", value: vehicle.fuelType }] : []),
+    ...(vehicle.transmission ? [{ icon: Cog, label: "Câmbio", value: vehicle.transmission }] : []),
   ]
+
+  // Opcionais salvos na descrição como JSON ou lista separada por vírgula
+  const optionals: string[] = vehicle.description
+    ? Object.keys(OPTION_LABELS).filter((key) =>
+      vehicle.description?.toLowerCase().includes(key)
+    )
+    : []
 
   return (
     <>
-      {/* JSON-LD para Google */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -218,7 +257,6 @@ export default async function VehicleDetailsPage({
                 </p>
               </div>
 
-              {/* Badges */}
               <div className="flex flex-wrap gap-2">
                 <Badge variant="secondary">{vehicle.year}</Badge>
                 <Badge variant="secondary">{formatKm(vehicle.km)} km</Badge>
@@ -230,7 +268,12 @@ export default async function VehicleDetailsPage({
               {/* Specs */}
               {specs.length > 0 && (
                 <Card>
-                  <CardContent className="p-5">
+                  <CardHeader className="pb-3">
+                    <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                      Especificações
+                    </h2>
+                  </CardHeader>
+                  <CardContent className="pt-0">
                     <div className="grid grid-cols-2 gap-4">
                       {specs.map((spec) => (
                         <div key={spec.label} className="flex items-start gap-3">
@@ -248,13 +291,41 @@ export default async function VehicleDetailsPage({
                 </Card>
               )}
 
+              {/* Opcionais */}
+              {optionals.length > 0 && (
+                <Card>
+                  <CardHeader className="pb-3">
+                    <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                      Opcionais
+                    </h2>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="grid grid-cols-2 gap-3">
+                      {optionals.map((key) => {
+                        const Icon = OPTION_ICONS[key] ?? Check
+                        return (
+                          <div key={key} className="flex items-center gap-2 text-sm">
+                            <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/10">
+                              <Icon className="size-3.5 text-primary" />
+                            </div>
+                            <span>{OPTION_LABELS[key]}</span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Descrição */}
               {vehicle.description && (
                 <Card>
-                  <CardHeader>
-                    <h2 className="text-base font-semibold">Descrição</h2>
+                  <CardHeader className="pb-3">
+                    <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                      Descrição
+                    </h2>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     <p className="whitespace-pre-wrap text-sm text-muted-foreground leading-relaxed">
                       {vehicle.description}
                     </p>
@@ -262,23 +333,57 @@ export default async function VehicleDetailsPage({
                 </Card>
               )}
 
-              {/* CTA WhatsApp */}
+              {/* CTA desktop */}
               <Button
                 asChild
                 size="lg"
                 className="w-full gap-2 bg-[#25D366] text-white hover:bg-[#20BD5A] sm:w-auto sm:min-w-[240px]"
               >
-                <WhatsAppTrackedLink
-                  href={whatsappHref}
-                  vehicleId={vehicle.id}
-                >
+                <WhatsAppTrackedLink href={whatsappHref} vehicleId={vehicle.id}>
                   <MessageCircle className="size-5 shrink-0" />
                   Falar com Consultor
                 </WhatsAppTrackedLink>
               </Button>
             </div>
           </div>
+
+          {/* Veículos relacionados */}
+          {related.length > 0 && (
+            <section className="mt-16">
+              <h2 className="mb-6 text-xl font-semibold">
+                Outros {vehicle.make} disponíveis
+              </h2>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {related.map((v) => {
+                  const img = v.images[0]?.url ?? "https://placehold.co/400x250?text=Sem+foto"
+                  return (
+                    <Link
+                      key={v.id}
+                      href={`/veiculo/${v.id}`}
+                      className="group rounded-xl border bg-card overflow-hidden hover:shadow-md transition-shadow"
+                    >
+                      <div className="relative aspect-video bg-muted">
+                        <Image
+                          src={img}
+                          alt={`${v.make} ${v.model}`}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          sizes="(max-width: 640px) 100vw, 25vw"
+                        />
+                      </div>
+                      <div className="p-4">
+                        <p className="font-medium">{v.make} {v.model}</p>
+                        <p className="text-sm text-muted-foreground">{v.year} · {formatKm(v.km)} km</p>
+                        <p className="mt-2 font-bold text-foreground">{formatPrice(v.price)}</p>
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            </section>
+          )}
         </div>
+
         {/* Botão flutuante mobile */}
         {whatsappClean.length >= 10 && (
           <WhatsAppTrackedLink
