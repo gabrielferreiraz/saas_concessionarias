@@ -2,6 +2,7 @@ import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { compare } from "bcryptjs"
 import { prisma } from "@/src/lib/prisma"
+import { loginRateLimit } from "@/src/lib/rate-limit"
 
 declare module "next-auth" {
   interface Session {
@@ -27,7 +28,6 @@ const isDev = process.env.NODE_ENV === "development"
 
 export const authOptions: NextAuthOptions = {
   debug: isDev,
-  trustHost: true,
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -38,6 +38,16 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials, req) {
         const email = credentials?.email?.toLowerCase().trim()
         const password = credentials?.password
+        const ip =
+          (req?.headers as Record<string, string> | undefined)?.["x-forwarded-for"]
+            ?.split(",")[0]
+            ?.trim() ?? "unknown"
+
+        const { success } = loginRateLimit(`login:${ip}`)
+        if (!success) {
+          console.error(`[AUTH] Rate limit excedido para IP: ${ip}`)
+          return null
+        }
 
         if (!email || !password) return null
 

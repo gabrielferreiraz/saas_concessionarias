@@ -5,8 +5,11 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/src/lib/auth"
 import { prisma } from "@/src/lib/prisma"
 import bcrypt from "bcryptjs"
+import { storeRequestRateLimit } from "@/src/lib/rate-limit"
+import { headers } from "next/headers"
 
 // ─── Formulário da LP (público) ───────────────────────────────────────────────
+
 
 export async function createStoreRequestAction(input: {
   name: string
@@ -16,16 +19,23 @@ export async function createStoreRequestAction(input: {
   subdomain: string
   message?: string
 }): Promise<{ success: true } | { success: false; error: string }> {
+  // Rate limiting por IP
+  const headerList = await headers()
+  const ip =
+    headerList.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown"
+
+  const { success: rateLimitOk } = storeRequestRateLimit(`store-request:${ip}`)
+  if (!rateLimitOk) {
+    return {
+      success: false,
+      error: "Muitas solicitações. Tente novamente em 1 hora.",
+    }
+  }
+
   const subdomain = input.subdomain.toLowerCase().trim().replace(/[^a-z0-9-]/g, "")
 
   if (!subdomain) {
     return { success: false, error: "Subdomínio inválido." }
-  }
-
-  // Verifica se subdomínio já está em uso
-  const existing = await prisma.store.findUnique({ where: { subdomain } })
-  if (existing) {
-    return { success: false, error: "Este subdomínio já está em uso." }
   }
 
   // Verifica se já tem solicitação pendente para esse email ou subdomínio
