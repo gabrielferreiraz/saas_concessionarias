@@ -2,7 +2,7 @@ import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { compare } from "bcryptjs"
 import { prisma } from "@/src/lib/prisma"
-import { loginRateLimit } from "@/src/lib/rate-limit"
+import { loginRateLimit, loginEmailRateLimit } from "@/src/lib/rate-limit"
 
 declare module "next-auth" {
   interface Session {
@@ -42,6 +42,13 @@ export const authOptions: NextAuthOptions = {
           (req?.headers as Record<string, string> | undefined)?.["x-forwarded-for"]
             ?.split(",")[0]
             ?.trim() ?? "unknown"
+        const { success: ipOk } = loginRateLimit(`login:${ip}`)
+        const { success: emailOk } = loginEmailRateLimit(`login:${email}`)
+
+        if (!ipOk || !emailOk) {
+          console.error(`[AUTH] Rate limit excedido — IP: ${ip}, email: ${email}`)
+          return null
+        }
 
         const { success } = loginRateLimit(`login:${ip}`)
         if (!success) {
@@ -137,7 +144,7 @@ export const authOptions: NextAuthOptions = {
   ],
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60,
+    maxAge: 8 * 60 * 60,
   },
   callbacks: {
     async jwt({ token, user }) {

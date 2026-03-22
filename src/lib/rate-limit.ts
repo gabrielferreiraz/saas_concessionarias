@@ -34,6 +34,11 @@ export const loginRateLimit = rateLimit({
     limit: 10, // 10 tentativas por IP
 })
 
+export const loginEmailRateLimit = rateLimit({
+    interval: 15 * 60 * 1000, // 15 minutos
+    limit: 5, // 5 tentativas por email
+})
+
 export const storeRequestRateLimit = rateLimit({
     interval: 60 * 60 * 1000, // 1 hora
     limit: 3, // 3 solicitações por IP
