@@ -267,3 +267,169 @@ export async function deleteVehicle(
   revalidatePath("/admin/estoque")
   return { success: true }
 }
+
+export async function deleteVehicleImageAction(
+  imageId: string
+): Promise<{ success: true } | { success: false; error: string }> {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.email) {
+    return { success: false, error: "Não autorizado." }
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  })
+
+  if (!user?.storeId) {
+    return { success: false, error: "Usuário não vinculado a uma loja." }
+  }
+
+  const image = await prisma.vehicleImage.findUnique({
+    where: { id: imageId },
+    include: { vehicle: { select: { storeId: true } } },
+  })
+
+  if (!image || image.vehicle.storeId !== user.storeId) {
+    return { success: false, error: "Imagem não encontrada." }
+  }
+
+  const bucket = process.env.R2_BUCKET_NAME
+  const publicBaseUrl = process.env.R2_PUBLIC_BASE_URL
+
+  if (bucket && publicBaseUrl) {
+    try {
+      const key = getR2KeyFromImageUrl(image.url, publicBaseUrl)
+      if (key) {
+        await r2Client.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }))
+      }
+    } catch (error) {
+      console.error("Erro ao deletar imagem do R2:", error)
+    }
+  }
+
+  await prisma.vehicleImage.delete({ where: { id: imageId } })
+  revalidatePath("/admin/estoque")
+  return { success: true }
+}
+
+export async function setCoverImageAction(
+  imageId: string,
+  vehicleId: string
+): Promise<{ success: true } | { success: false; error: string }> {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.email) {
+    return { success: false, error: "Não autorizado." }
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  })
+
+  if (!user?.storeId) {
+    return { success: false, error: "Usuário não vinculado a uma loja." }
+  }
+
+  const vehicle = await prisma.vehicle.findUnique({
+    where: { id: vehicleId },
+    select: { storeId: true },
+  })
+
+  if (!vehicle || vehicle.storeId !== user.storeId) {
+    return { success: false, error: "Veículo não encontrado." }
+  }
+
+  // Remove capa de todas e define a nova
+  await prisma.vehicleImage.updateMany({
+    where: { vehicleId },
+    data: { isCover: false },
+  })
+
+  await prisma.vehicleImage.update({
+    where: { id: imageId },
+    data: { isCover: true },
+  })
+
+  revalidatePath("/admin/estoque")
+  return { success: true }
+}
+
+export async function addVehicleImagesAction(
+  vehicleId: string,
+  imageFiles: File[]
+): Promise<{ success: true } | { success: false; error: string }> {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.email) {
+    return { success: false, error: "Não autorizado." }
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  })
+
+  if (!user?.storeId) {
+    return { success: false, error: "Usuário não vinculado a uma loja." }
+  }
+
+  const vehicle = await prisma.vehicle.findUnique({
+    where: { id: vehicleId },
+    select: { storeId: true },
+    include: { images: { select: { order: true } } } as any,
+  })
+
+  if (!vehicle || vehicle.storeId !== user.storeId) {
+    return { success: false, error: "Veículo não encontrado." }
+  }
+
+  const bucket = process.env.R2_BUCKET_NAME
+  const publicBaseUrl = process.env.R2_PUBLIC_BASE_URL
+
+  if (!bucket || !publicBaseUrl) {
+    return { success: false, error: "Configuração de storage incompleta." }
+  }
+
+  const existingCount = await prisma.vehicleImage.count({ where: { vehicleId } })
+  let nextOrder = existingCount
+
+  try {
+    for (const file of imageFiles) {
+      const arrayBuffer = await file.arrayBuffer()
+      const buffer = Buffer.from(arrayBuffer)
+
+      const processedImage = await sharp(buffer)
+        .resize({ width: 1200, withoutEnlargement: true })
+        .webp({ quality: 85 })
+        .toBuffer()
+
+      const safeName = (file.name || "image").replace(/\s+/g, "-").toLowerCase()
+      const objectKey = `stores/${user.storeId}/vehicles/${Date.now()}-${nextOrder}-${safeName}.webp`
+
+      await r2Client.send(
+        new PutObjectCommand({
+          Bucket: bucket,
+          Key: objectKey,
+          Body: processedImage,
+          ContentType: "image/webp",
+        })
+      )
+
+      const url = `${publicBaseUrl.replace(/\/$/, "")}/${objectKey}`
+
+      await prisma.vehicleImage.create({
+        data: {
+          vehicleId,
+          url,
+          isCover: existingCount === 0 && nextOrder === 0,
+          order: nextOrder,
+        },
+      })
+
+      nextOrder++
+    }
+
+    revalidatePath("/admin/estoque")
+    return { success: true }
+  } catch (error) {
+    console.error("Erro ao adicionar imagens:", error)
+    return { success: false, error: "Falha ao adicionar imagens." }
+  }
+}

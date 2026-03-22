@@ -1,8 +1,9 @@
 "use client"
 
+import { ExistingImagesManager } from "@/components/existing-images-manager"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { createVehicleAction, updateVehicleAction } from "@/src/actions/vehicles"
+import { createVehicleAction, updateVehicleAction, addVehicleImagesAction } from "@/src/actions/vehicles"
 import { useToast } from "@/hooks/use-toast"
 import { ImageUploader } from "@/components/image-uploader"
 import { Input } from "@/components/ui/input"
@@ -191,6 +192,15 @@ export function VehicleForm({ editVehicle }: VehicleFormProps) {
 
         if (!result.success) throw new Error(result.error)
 
+        // Adiciona novas fotos se houver
+        if (images.length > 0) {
+          const addResult = await addVehicleImagesAction(
+            editVehicle.id,
+            images.map((img) => img.file)
+          )
+          if (!addResult.success) throw new Error(addResult.error)
+        }
+
         toast({ title: "Veículo atualizado com sucesso!" })
       } else {
         await createVehicleAction({
@@ -244,6 +254,7 @@ export function VehicleForm({ editVehicle }: VehicleFormProps) {
       </div>
 
       <div className="grid gap-8 lg:grid-cols-2">
+
         {/* Coluna 1: Fotos */}
         <div className="space-y-4">
           <div>
@@ -253,40 +264,27 @@ export function VehicleForm({ editVehicle }: VehicleFormProps) {
             </p>
           </div>
 
-          {/* Imagens existentes (modo edição) */}
-          {isEditing && editVehicle?.existingImages && editVehicle.existingImages.length > 0 && (
-            <div className="space-y-2">
-              <p className="text-xs text-muted-foreground">Fotos atuais</p>
-              <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-                {editVehicle.existingImages
-                  .sort((a, b) => a.order - b.order)
-                  .map((img) => (
-                    <div key={img.id} className="relative aspect-square overflow-hidden rounded-md bg-muted">
-                      <img
-                        src={img.url}
-                        alt="Foto do veículo"
-                        className="h-full w-full object-cover"
-                      />
-                      {img.isCover && (
-                        <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1 py-0.5 text-[10px] text-white">
-                          Capa
-                        </span>
-                      )}
-                    </div>
-                  ))}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Para alterar fotos, adicione novas abaixo. As fotos antigas serão mantidas.
-              </p>
-            </div>
+          {/* Imagens existentes — só na edição */}
+          {isEditing && editVehicle?.existingImages && (
+            <ExistingImagesManager
+              vehicleId={editVehicle.id}
+              initialImages={editVehicle.existingImages}
+            />
           )}
 
           {/* Upload de novas fotos */}
-          <ImageUploader
-            images={images}
-            onImagesChange={setImages}
-            maxImages={10}
-          />
+          <div>
+            {isEditing && (
+              <p className="mb-2 text-xs text-muted-foreground">
+                Adicionar novas fotos:
+              </p>
+            )}
+            <ImageUploader
+              images={images}
+              onImagesChange={setImages}
+              maxImages={10}
+            />
+          </div>
         </div>
 
         {/* Coluna 2: Campos */}
