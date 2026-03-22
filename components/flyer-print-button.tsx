@@ -49,6 +49,7 @@ export function FlyerActions({ publicUrl }: FlyerActionsProps) {
             Copiar link do flyer
           </>
         )}
+
       </Button>
     </div>
   )
