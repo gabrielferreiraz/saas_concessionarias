@@ -10,18 +10,17 @@ export default async function EditarVeiculoPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-
   const session = await getServerSession(authOptions)
   if (!session?.user?.email) notFound()
 
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
   })
-
   if (!user?.storeId) notFound()
 
   const vehicle = await prisma.vehicle.findUnique({
     where: { id },
+    include: { images: { orderBy: { order: "asc" } } },
   })
 
   if (!vehicle || vehicle.storeId !== user.storeId) notFound()
@@ -39,9 +38,16 @@ export default async function EditarVeiculoPage({
             price: vehicle.price,
             color: vehicle.color,
             fuelType: vehicle.fuelType,
+            transmission: vehicle.transmission,
             featured: vehicle.featured,
             status: vehicle.status as "AVAILABLE" | "RESERVED" | "SOLD",
             description: vehicle.description,
+            existingImages: vehicle.images.map((img) => ({
+              id: img.id,
+              url: img.url,
+              isCover: img.isCover,
+              order: img.order,
+            })),
           }}
         />
       </div>

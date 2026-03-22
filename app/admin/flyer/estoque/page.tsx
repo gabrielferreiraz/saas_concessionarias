@@ -38,7 +38,7 @@ export default async function FlyerEstoquePage() {
   })
 
   const vehicles = await prisma.vehicle.findMany({
-    where: { storeId: user.storeId },
+    where: { storeId: user.storeId, status: "AVAILABLE" },
     include: {
       images: { orderBy: { order: "asc" }, take: 1 },
     },

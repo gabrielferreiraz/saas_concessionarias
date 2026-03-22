@@ -41,6 +41,13 @@ interface VehicleFormData {
   description: string
 }
 
+interface ExistingImage {
+  id: string
+  url: string
+  isCover: boolean
+  order: number
+}
+
 interface VehicleFormProps {
   editVehicle?: {
     id: string
@@ -51,10 +58,11 @@ interface VehicleFormProps {
     price: number
     color?: string | null
     fuelType?: string | null
-    transmission?: string | null  // ← adicionar esta linha
+    transmission?: string | null
     featured: boolean
     status: "AVAILABLE" | "RESERVED" | "SOLD"
     description?: string | null
+    existingImages?: ExistingImage[]
   }
 }
 
@@ -236,25 +244,53 @@ export function VehicleForm({ editVehicle }: VehicleFormProps) {
       </div>
 
       <div className="grid gap-8 lg:grid-cols-2">
-        {/* Coluna 1: Fotos (só no cadastro) */}
-        {!isEditing && (
-          <div className="space-y-4">
-            <div>
-              <h2 className="text-sm font-medium">Fotos do Veículo</h2>
-              <p className="text-xs text-muted-foreground mt-1">
-                A primeira imagem será usada como capa
+        {/* Coluna 1: Fotos */}
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-sm font-medium">Fotos do Veículo</h2>
+            <p className="text-xs text-muted-foreground mt-1">
+              A primeira imagem será usada como capa
+            </p>
+          </div>
+
+          {/* Imagens existentes (modo edição) */}
+          {isEditing && editVehicle?.existingImages && editVehicle.existingImages.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground">Fotos atuais</p>
+              <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+                {editVehicle.existingImages
+                  .sort((a, b) => a.order - b.order)
+                  .map((img) => (
+                    <div key={img.id} className="relative aspect-square overflow-hidden rounded-md bg-muted">
+                      <img
+                        src={img.url}
+                        alt="Foto do veículo"
+                        className="h-full w-full object-cover"
+                      />
+                      {img.isCover && (
+                        <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1 py-0.5 text-[10px] text-white">
+                          Capa
+                        </span>
+                      )}
+                    </div>
+                  ))}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Para alterar fotos, adicione novas abaixo. As fotos antigas serão mantidas.
               </p>
             </div>
-            <ImageUploader
-              images={images}
-              onImagesChange={setImages}
-              maxImages={10}
-            />
-          </div>
-        )}
+          )}
+
+          {/* Upload de novas fotos */}
+          <ImageUploader
+            images={images}
+            onImagesChange={setImages}
+            maxImages={10}
+          />
+        </div>
 
         {/* Coluna 2: Campos */}
-        <div className={`space-y-6 ${isEditing ? "lg:col-span-2" : ""}`}>
+        <div className="space-y-6">
           <FieldGroup>
             {/* Marca e Modelo */}
             <div className="grid gap-4 sm:grid-cols-2">
