@@ -373,7 +373,6 @@ export async function addVehicleImagesAction(
   const vehicle = await prisma.vehicle.findUnique({
     where: { id: vehicleId },
     select: { storeId: true },
-    include: { images: { select: { order: true } } } as any,
   })
 
   if (!vehicle || vehicle.storeId !== user.storeId) {
@@ -431,5 +430,48 @@ export async function addVehicleImagesAction(
   } catch (error) {
     console.error("Erro ao adicionar imagens:", error)
     return { success: false, error: "Falha ao adicionar imagens." }
+  }
+}
+
+export async function reorderVehicleImagesAction(
+  vehicleId: string,
+  imageIds: string[]
+): Promise<{ success: true } | { success: false; error: string }> {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.email) {
+    return { success: false, error: "Não autorizado." }
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  })
+
+  if (!user?.storeId) {
+    return { success: false, error: "Usuário não vinculado a uma loja." }
+  }
+
+  const vehicle = await prisma.vehicle.findUnique({
+    where: { id: vehicleId },
+    select: { storeId: true },
+  })
+
+  if (!vehicle || vehicle.storeId !== user.storeId) {
+    return { success: false, error: "Veículo não encontrado." }
+  }
+
+  try {
+    await Promise.all(
+      imageIds.map((id, index) =>
+        prisma.vehicleImage.update({
+          where: { id },
+          data: { order: index },
+        })
+      )
+    )
+    revalidatePath("/admin/estoque")
+    return { success: true }
+  } catch (error) {
+    console.error("Erro ao reordenar imagens:", error)
+    return { success: false, error: "Falha ao reordenar imagens." }
   }
 }
