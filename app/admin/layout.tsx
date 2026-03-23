@@ -10,12 +10,15 @@ export default async function AdminLayout({
 }) {
   let storeName = "Admin"
   let logoUrl: string | null = null
+  let userRole: string | undefined
   const session = await getServerSession(authOptions)
   if (session?.user?.email) {
+    userRole = session.user.role
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
-      select: { storeId: true },
+      select: { storeId: true, role: true },
     })
+    if (user?.role) userRole = user.role
     if (user?.storeId) {
       const store = await prisma.store.findUnique({
         where: { id: user.storeId },
@@ -30,7 +33,7 @@ export default async function AdminLayout({
 
   return (
     <div className="min-h-screen bg-background">
-      <AdminNav storeName={storeName} logoUrl={logoUrl ?? undefined} />
+      <AdminNav storeName={storeName} logoUrl={logoUrl ?? undefined} userRole={userRole} />
       {children}
     </div>
   )

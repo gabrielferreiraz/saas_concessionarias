@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Car, LayoutDashboard, Package, Settings, Menu, Users } from "lucide-react";
+import { Car, LayoutDashboard, Package, Settings, Menu, Users, Contact } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,19 +15,27 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-const navItems = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/estoque", label: "Estoque", icon: Package },
-  { href: "/admin/leads", label: "Leads", icon: Users },
-  { href: "/admin/configuracoes", label: "Configurações", icon: Settings },
-];
-
 interface AdminNavProps {
   storeName: string;
   logoUrl?: string;
+  userRole?: string;
 }
 
-export function AdminNav({ storeName, logoUrl }: AdminNavProps) {
+export function AdminNav({ storeName, logoUrl, userRole }: AdminNavProps) {
+  const baseNavItems = [
+    { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/admin/estoque", label: "Estoque", icon: Package },
+    { href: "/admin/leads", label: "Leads", icon: Contact },
+  ];
+
+  const adminNavItems = [
+    { href: "/admin/usuarios", label: "Usuários", icon: Users },
+    { href: "/admin/configuracoes", label: "Configurações", icon: Settings },
+  ];
+
+  const navItems = userRole === "STORE_USER" 
+    ? baseNavItems 
+    : [...baseNavItems, ...adminNavItems];
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);

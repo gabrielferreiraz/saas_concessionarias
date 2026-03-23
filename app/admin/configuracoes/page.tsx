@@ -11,6 +11,10 @@ export default async function ConfiguracoesPage() {
     redirect("/login")
   }
 
+  if (session.user.role === "STORE_USER") {
+    redirect("/admin")
+  }
+
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
   })
